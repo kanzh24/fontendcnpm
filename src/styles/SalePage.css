@@ -1,0 +1,49 @@
+/* SalesPage Container */
+.sales-page-container {
+    display: flex;
+    min-height: 100vh;
+    gap: 20px;
+}
+
+.sales-page-content {
+    flex: 2;
+    padding: 20px;
+    min-width: 300px;
+    /* margin-right: 10px; Thêm khoảng cách bên phải để né Cart */
+    margin-left: 200px;
+}
+
+.sales-page-content h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #4A4A4A;
+}
+
+.cart-container {
+    flex: 1;
+    min-width: 300px;
+}
+
+/* Responsive: Xếp chồng các cột khi màn hình nhỏ */
+@media (max-width: 900px) {
+    .sales-page-container {
+        flex-direction: column; /* Xếp chồng các cột */
+    }
+
+    .sales-page-content {
+        order: 1;
+        margin-right: 0; /* Bỏ margin-right khi xếp chồng */
+    }
+
+    .cart-container {
+        order: 2;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .sidebar-sale-container {
+        order: 0;
+    }
+}

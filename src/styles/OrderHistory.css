@@ -1,0 +1,209 @@
+/* Order Container */
+.order-container {
+  margin: 20px auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 90%;
+  max-width: 1200px;
+}
+
+.order-container h2 {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #4A4A4A;
+}
+
+/* Bố cục hai cột */
+.order-content {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Order List (Cột trái) */
+.order-container .order-list {
+  flex: 1;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  padding: 10px;
+  max-height: 500px;
+  overflow-y: auto;
+  min-width: 300px;
+}
+
+.order-container .order-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 15px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.order-container .order-item:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+.order-container .order-item.active {
+  background-color: #ffa500;
+  color: #fff;
+  border-color: #ff6f61;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.order-container .order-item .top,
+.order-container .order-item .bot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-container .order-item .top {
+  margin-bottom: 5px;
+}
+
+.order-container .order-item .order-id {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.order-container .order-item .status {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #009688;
+}
+
+.order-container .order-item .status.unpaid {
+  color: #d32f2f;
+}
+
+.order-container .order-item .bot p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.order-container .order-item .amount {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #ff6f61;
+}
+
+/* Khi active, thay đổi màu chữ */
+.order-container .order-item.active .order-id,
+.order-container .order-item.active .status,
+.order-container .order-item.active .bot p,
+.order-container .order-item.active .amount {
+  color: #fff;
+}
+
+/* Order Details (Cột phải) */
+.order-details {
+  flex: 1;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  padding: 15px;
+  min-width: 300px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.order-details h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #4A4A4A;
+  text-align: center;
+}
+
+.order-details p {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+.order-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  max-height: 350px;
+}
+
+.order-item-detail {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ccc;
+  height: 90px;
+}
+
+.order-item-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.order-item-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
+.order-item-name {
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.order-item-price {
+  color: #ff6f61;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.order-item-quantity {
+  font-weight: bold;
+  font-size: 1rem;
+  min-width: 20px;
+  text-align: center;
+}
+
+.order-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding-top: 10px;
+  border-top: 1px solid #ccc;
+}
+
+/* Responsive: Xếp chồng khi màn hình nhỏ */
+@media (max-width: 900px) {
+  .order-content {
+      flex-direction: column;
+  }
+
+  .order-container .order-list,
+  .order-details {
+      flex: none;
+      width: 100%;
+      max-height: 300px;
+  }
+}

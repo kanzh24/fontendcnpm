@@ -1,0 +1,55 @@
+/* SidebarApp Container */
+.sidebar-app-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f4f4f4; /* Màu nền nhẹ cho toàn bộ trang */
+}
+
+/* Sidebar (Được định dạng trong Sidebar.css, nhưng cần đảm bảo không gian) */
+.sidebar-app-container .sidebar {
+    width: 60px; /* Chiều rộng mặc định của sidebar khi thu gọn */
+    transition: width 0.3s ease;
+}
+
+.sidebar-app-container .sidebar:hover {
+    width: 200px; /* Chiều rộng khi mở rộng */
+}
+
+/* Nội dung chính */
+.sidebar-app-content {
+    flex: 1;
+    padding: 20px;
+    margin-left: 60px; /* Đảm bảo nội dung chính không bị che bởi sidebar khi thu gọn */
+    transition: margin-left 0.3s ease;
+}
+
+/* Điều chỉnh margin-left khi sidebar mở rộng */
+.sidebar-app-container .sidebar:hover ~ .sidebar-app-content {
+    margin-left: 200px;
+}
+
+/* Responsive: Khi màn hình nhỏ */
+@media (max-width: 768px) {
+    .sidebar-app-container {
+        flex-direction: column;
+    }
+
+    .sidebar-app-container .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .sidebar-app-container .sidebar:hover {
+        width: 100%;
+    }
+
+    .sidebar-app-content {
+        margin-left: 0;
+        padding: 10px;
+    }
+
+    .sidebar-app-container .sidebar:hover ~ .sidebar-app-content {
+        margin-left: 0;
+    }
+}

@@ -1,0 +1,73 @@
+/* Sidebar */
+.sidebar-container .sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 60px;
+  height: 100vh;
+  background-color: #ffa500;
+  border-right: 1px solid #ccc;
+  overflow: hidden;
+  z-index: 10;
+  transition: width 0.3s ease;
+  color: #fff;
+}
+
+.sidebar-container .sidebar:hover {
+  width: 200px;
+}
+
+.sidebar-container .sidebar-title {
+  font-size: 1.5rem;
+  padding: 1rem 0.5rem;
+  margin: 0;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar-container .sidebar:hover .sidebar-title {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.sidebar-container .sidebar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-container .sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0.5rem;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.sidebar-container .sidebar-item:hover {
+  background-color: #ff6f61;
+}
+
+.sidebar-container .sidebar-item i {
+  font-size: 1.5rem;
+  margin-right: 10px;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.sidebar-container .sidebar-item span {
+  font-size: 1rem;
+  color: #fff;
+  margin-left: 10px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar-container .sidebar:hover .sidebar-item span {
+  opacity: 1;
+  transform: translateX(0);
+}

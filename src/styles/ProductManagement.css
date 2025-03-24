@@ -1,0 +1,235 @@
+/* Product Management Container */
+.product-management-container {
+    margin: 20px auto;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 90%;
+    max-width: 1200px;
+}
+
+.product-management-container h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #4A4A4A;
+}
+
+/* Nút "Thêm sản phẩm" */
+.add-product-button {
+    background-color: #ffa500; /* Màu cam */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.add-product-button:hover {
+    background-color: #ff6f61;
+}
+
+/* Bảng danh sách sản phẩm */
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.product-table th,
+.product-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.product-table th {
+    background-color: #f9f9f9;
+    font-weight: bold;
+    color: #4A4A4A;
+}
+
+.product-table td {
+    color: #333;
+}
+
+.product-table tr:hover {
+    background-color: #f0f0f0;
+}
+
+/* Product Info (Cột Product) */
+.product-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* Status */
+.status {
+    font-weight: 500;
+}
+
+.status.in-stock {
+    color: #009688; /* Màu xanh cho "In Stock" */
+}
+
+.status.out-of-stock {
+    color: #d32f2f; /* Màu đỏ cho "Out of Stock" */
+}
+
+/* Nút Edit và Delete */
+.edit-button,
+.delete-button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-right: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.edit-button {
+    background-color: #4caf50; /* Màu xanh lá cho Edit */
+    color: #fff;
+}
+
+.edit-button:hover {
+    background-color: #388e3c;
+}
+
+.delete-button {
+    background-color: #ff6f61; /* Màu cam đỏ cho Delete */
+    color: #fff;
+}
+
+.delete-button:hover {
+    background-color: #ff3e2d;
+}
+
+/* Form Overlay */
+.form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+/* Form Container */
+.form-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 600px; /* Tăng chiều rộng để chứa 3 cột */
+    position: relative;
+}
+
+/* Nút đóng form */
+.close-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #ffa500; /* Màu cam */
+    cursor: pointer;
+}
+
+/* Phần upload hình ảnh */
+.image-upload {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.image-preview {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.upload-label {
+    display: inline-block;
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.upload-label:hover {
+    background-color: #e0e0e0;
+}
+
+/* Form Row (3 cột) */
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+/* Form Group */
+.form-group {
+    flex: 1;
+    min-width: 0;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+/* Nút Save Product */
+.save-product-button {
+    background-color: #ffa500; /* Màu cam */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: block;
+    width: 100%;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.save-product-button:hover {
+    background-color: #ff6f61;
+}
