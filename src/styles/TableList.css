@@ -1,0 +1,39 @@
+.table-list-container {
+    width: 100%;
+  }
+  
+  .table-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .table-item {
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .table-empty {
+    background-color: #e0e0e0;
+  }
+  
+  .table-occupied {
+    background-color: #ffcccb;
+  }
+  
+  .table-item:hover {
+    transform: scale(1.05);
+  }
+  
+  .table-item h3 {
+    margin: 0;
+    font-size: 18px;
+  }
+  
+  .table-item p {
+    margin: 5px 0;
+    font-size: 14px;
+  }

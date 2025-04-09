@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-// import '../styles/Order.css';
-
 const OrderHistory = () => {
-  const [selectedOrder, setSelectedOrder] = useState(null);
-
-  const sampleOrders = [
+  const [orders, setOrders] = useState([
     {
       id: 20235,
       status: 'Paid',
@@ -49,7 +45,9 @@ const OrderHistory = () => {
         { id: 8, name: 'Bánh ngọt', price: 30000, quantity: 1, image: null },
       ],
     },
-  ];
+  ]);
+
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   const fallbackImage = require(`../../assets/images/image01.jpg`);
 
@@ -60,12 +58,44 @@ const OrderHistory = () => {
     document.querySelector(`[data-order-id="${order.id}"]`).classList.add('active');
   };
 
+  const handleConfirm = () => {
+    if (selectedOrder.status === 'Unpaid') {
+      const updatedOrders = orders.map((order) =>
+        order.id === selectedOrder.id ? { ...order, status: 'Confirmed' } : order
+      );
+      setOrders(updatedOrders);
+      setSelectedOrder({ ...selectedOrder, status: 'Confirmed' });
+    }
+  };
+
+  const handleCancel = () => {
+    if (window.confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
+      const updatedOrders = orders.map((order) =>
+        order.id === selectedOrder.id && order.status !== 'Cancelled'
+          ? { ...order, status: 'Cancelled' }
+          : order
+      );
+      setOrders(updatedOrders);
+      setSelectedOrder({ ...selectedOrder, status: 'Cancelled' });
+    }
+  };
+
+  const handleMarkAsPaid = () => {
+    if (selectedOrder.status === 'Unpaid') {
+      const updatedOrders = orders.map((order) =>
+        order.id === selectedOrder.id ? { ...order, status: 'Paid' } : order
+      );
+      setOrders(updatedOrders);
+      setSelectedOrder({ ...selectedOrder, status: 'Paid' });
+    }
+  };
+
   return (
     <div className="order-container">
       <h2>Lịch sử đơn hàng</h2>
       <div className="order-content">
         <div className="order-list">
-          {sampleOrders.map((order) => (
+          {orders.map((order) => (
             <div
               key={order.id}
               data-order-id={order.id}
@@ -74,7 +104,9 @@ const OrderHistory = () => {
             >
               <div className="top">
                 <p className="order-id">Order #{order.id}</p>
-                <p className={`status ${order.status.toLowerCase()}`}>Trạng thái: {order.status}</p>
+                <p className={`status ${order.status.toLowerCase()}`}>
+                  Trạng thái: {order.status}
+                </p>
               </div>
               <div className="bot">
                 <p>Bàn: {order.table}</p>
@@ -98,7 +130,9 @@ const OrderHistory = () => {
                     />
                     <div className="order-item-details">
                       <span className="order-item-name">{item.name}</span>
-                      <span className="order-item-price">{item.price.toLocaleString()} VND</span>
+                      <span className="order-item-price">
+                        {item.price.toLocaleString()} VND
+                      </span>
                     </div>
                     <span className="order-item-quantity">{item.quantity}</span>
                   </li>
@@ -107,6 +141,24 @@ const OrderHistory = () => {
               <div className="order-total">
                 <strong>Tổng cộng:</strong>
                 <span>{selectedOrder.amount.toLocaleString()} USD</span>
+              </div>
+              {/* Nút xử lý */}
+              <div className="order-actions">
+                {selectedOrder.status === 'Unpaid' && (
+                  <button className="confirm-button" onClick={handleConfirm}>
+                    Xác nhận
+                  </button>
+                )}
+                {selectedOrder.status !== 'Cancelled' && (
+                  <button className="cancel-button" onClick={handleCancel}>
+                    Hủy
+                  </button>
+                )}
+                {selectedOrder.status === 'Unpaid' && (
+                  <button className="paid-button" onClick={handleMarkAsPaid}>
+                    Đã thanh toán
+                  </button>
+                )}
               </div>
             </>
           ) : (
