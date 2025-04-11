@@ -19,6 +19,9 @@ import './styles/ProductManagement.css';
 import './styles/TableManagementPage.css'; // Thêm CSS cho TableManagementPage
 import './styles/TableList.css';
 import './styles/TableCart.css';
+import './styles/IngredientManagementPage.css';
+import './styles/ReceiptList.css'; // Thêm CSS cho ReceiptList
+import './styles/IngredientSelection.css'; // Thêm CSS cho IngredientSelection
 
 const App = () => {
   return (

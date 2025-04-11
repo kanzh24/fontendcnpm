@@ -1,0 +1,36 @@
+.receipt-list-container {
+    width: 100%;
+  }
+  
+  .receipt-list-container h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .receipt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .receipt-item {
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+  }
+  
+  .receipt-item h4 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+  }
+  
+  .receipt-item ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .receipt-item li {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }

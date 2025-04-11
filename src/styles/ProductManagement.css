@@ -1,235 +1,331 @@
-/* Product Management Container */
 .product-management-container {
-    margin: 20px auto;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    width: 90%;
-    max-width: 1200px;
-}
-
-.product-management-container h2 {
-    text-align: center;
-    font-size: 28px;
+  }
+  
+  .product-management-container h2 {
+    font-size: 24px;
     margin-bottom: 20px;
-    color: #4A4A4A;
-}
-
-/* Nút "Thêm sản phẩm" */
-.add-product-button {
-    background-color: #ffa500; /* Màu cam */
-    color: #fff;
-    border: none;
+  }
+  
+  .add-product-button {
     padding: 10px 20px;
+    background-color: #ff6347;
+    color: white;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1rem;
     margin-bottom: 20px;
-    transition: background-color 0.3s ease;
-}
-
-.add-product-button:hover {
-    background-color: #ff6f61;
-}
-
-/* Bảng danh sách sản phẩm */
-.product-table {
+  }
+  
+  .add-product-button:hover {
+    background-color: #e5533d;
+  }
+  
+  .product-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-}
-
-.product-table th,
-.product-table td {
-    padding: 12px 15px;
+    margin-bottom: 20px;
+  }
+  
+  .product-table th,
+  .product-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
     text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.product-table th {
-    background-color: #f9f9f9;
-    font-weight: bold;
-    color: #4A4A4A;
-}
-
-.product-table td {
-    color: #333;
-}
-
-.product-table tr:hover {
-    background-color: #f0f0f0;
-}
-
-/* Product Info (Cột Product) */
-.product-info {
+  }
+  
+  .product-table th {
+    background-color: #f4f4f4;
+  }
+  
+  .product-info {
     display: flex;
     align-items: center;
     gap: 10px;
-}
-
-.product-image {
-    width: 40px;
-    height: 40px;
+  }
+  
+  .product-image {
+    width: 50px;
+    height: 50px;
     object-fit: cover;
     border-radius: 5px;
-}
-
-/* Status */
-.status {
-    font-weight: 500;
-}
-
-.status.in-stock {
-    color: #009688; /* Màu xanh cho "In Stock" */
-}
-
-.status.out-of-stock {
-    color: #d32f2f; /* Màu đỏ cho "Out of Stock" */
-}
-
-/* Nút Edit và Delete */
-.edit-button,
-.delete-button {
+  }
+  
+  .status.in-stock {
+    color: green;
+  }
+  
+  .status.out-of-stock {
+    color: red;
+  }
+  
+  .edit-button,
+  .delete-button {
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 0.9rem;
     margin-right: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.edit-button {
-    background-color: #4caf50; /* Màu xanh lá cho Edit */
-    color: #fff;
-}
-
-.edit-button:hover {
-    background-color: #388e3c;
-}
-
-.delete-button {
-    background-color: #ff6f61; /* Màu cam đỏ cho Delete */
-    color: #fff;
-}
-
-.delete-button:hover {
-    background-color: #ff3e2d;
-}
-
-/* Form Overlay */
-.form-overlay {
+  }
+  
+  .edit-button {
+    background-color: #ff6347;
+    color: white;
+  }
+  
+  .edit-button:hover {
+    background-color: #e5533d;
+  }
+  
+  .delete-button {
+    background-color: #ccc;
+    color: #333;
+  }
+  
+  .delete-button:hover {
+    background-color: #bbb;
+  }
+  
+  .form-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 100;
-}
-
-/* Form Container */
-.form-container {
-    background-color: #fff;
+  }
+  
+  .form-container {
+    background: white;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    width: 90%;
-    max-width: 600px; /* Tăng chiều rộng để chứa 3 cột */
+    width: 600px;
+    max-width: 90%;
     position: relative;
-}
-
-/* Nút đóng form */
-.close-button {
+  }
+  
+  .close-button {
     position: absolute;
     top: 10px;
     left: 10px;
     background: none;
     border: none;
-    font-size: 1.2rem;
-    color: #ffa500; /* Màu cam */
+    font-size: 18px;
     cursor: pointer;
-}
-
-/* Phần upload hình ảnh */
-.image-upload {
+  }
+  
+  .image-upload {
     text-align: center;
     margin-bottom: 20px;
-}
-
-.image-preview {
+  }
+  
+  .image-preview {
     width: 150px;
     height: 150px;
     object-fit: cover;
-    border-radius: 5px;
+    border-radius: 8px;
     margin-bottom: 10px;
-}
-
-.upload-label {
+  }
+  
+  .upload-label {
     display: inline-block;
-    background-color: #f0f0f0;
-    color: #333;
-    padding: 5px 10px;
+    padding: 8px 16px;
+    background-color: #ff6347;
+    color: white;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-}
-
-.upload-label:hover {
-    background-color: #e0e0e0;
-}
-
-/* Form Row (3 cột) */
-.form-row {
+  }
+  
+  .upload-label:hover {
+    background-color: #e5533d;
+  }
+  
+  form {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     gap: 15px;
-    margin-bottom: 15px;
-}
-
-/* Form Group */
-.form-group {
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .form-group {
     flex: 1;
-    min-width: 0;
-}
-
-.form-group label {
-    display: block;
-    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    font-size: 14px;
     margin-bottom: 5px;
-    color: #333;
-}
-
-.form-group input,
-.form-group select {
-    width: 100%;
+  }
+  
+  .form-group input,
+  .form-group select {
     padding: 8px;
+    font-size: 14px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    font-size: 1rem;
-    box-sizing: border-box;
-}
-
-/* Nút Save Product */
-.save-product-button {
-    background-color: #ffa500; /* Màu cam */
-    color: #fff;
+  }
+  
+  .add-ingredient-button {
+    padding: 8px 12px;
+    background-color: #ff6347;
+    color: white;
     border: none;
-    padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1rem;
-    display: block;
-    width: 100%;
-    text-align: center;
-    transition: background-color 0.3s ease;
-}
-
-.save-product-button:hover {
-    background-color: #ff6f61;
-}
+  }
+  
+  .add-ingredient-button:hover {
+    background-color: #e5533d;
+  }
+  
+  .save-product-button {
+    padding: 10px;
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .save-product-button:hover {
+    background-color: #e5533d;
+  }
+  
+  .ingredient-selection-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .ingredient-selection-content {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .ingredient-list {
+    flex: 1;
+  }
+  
+  .ingredient-list h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .ingredient-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+  }
+  
+  .ingredient-item {
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .ingredient-item:hover {
+    transform: scale(1.05);
+  }
+  
+  .ingredient-item.selected {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .ingredient-item h5 {
+    margin: 0;
+    font-size: 16px;
+  }
+  
+  .ingredient-item p {
+    margin: 5px 0 0 0;
+    font-size: 14px;
+  }
+  
+  .ingredient-input {
+    width: 300px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  
+  .ingredient-input h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .input-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .input-form label {
+    font-size: 16px;
+  }
+  
+  .input-form input {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .input-form button {
+    padding: 8px 12px;
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .input-form button:hover {
+    background-color: #e5533d;
+  }
+  
+  .current-ingredients h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .current-ingredients ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+  }
+  
+  .current-ingredients li {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .ingredient-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .ingredient-actions button {
+    padding: 8px 12px;
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .ingredient-actions button:hover {
+    background-color: #e5533d;
+  }
