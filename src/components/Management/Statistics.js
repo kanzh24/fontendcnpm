@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pie, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement } from 'chart.js';
-// import './styles/Statistics.css';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement);
 
 const fallbackImage = require(`../../assets/images/image01.jpg`);
 
 const Statistics = () => {
+  const [error, setError] = useState('');
+
+  // Dữ liệu giả lập (cần thay thế bằng API thực tế)
   const pieData = {
     labels: ['Đồ ăn', 'Đồ uống', 'Khác'],
     datasets: [{ label: 'Doanh thu', data: [5000, 3000, 2000], backgroundColor: ['#dad9d9', '#ff6f00', '#424242'] }],
@@ -21,16 +23,19 @@ const Statistics = () => {
   const topProducts = [
     { id: 1, name: 'Pizza Margherita', price: 150000, quantity: 2, image: null },
     { id: 2, name: 'Cà phê sữa đá', price: 30000, quantity: 1, image: null },
-    // Thêm dữ liệu để kiểm tra overflow
     { id: 3, name: 'Trà sữa trân châu', price: 45000, quantity: 3, image: null },
     { id: 4, name: 'Bánh mì pate', price: 25000, quantity: 5, image: null },
     { id: 5, name: 'Nước cam ép', price: 35000, quantity: 2, image: null },
     { id: 6, name: 'Phở bò', price: 60000, quantity: 1, image: null },
   ];
 
+  // TODO: Thay thế dữ liệu giả lập bằng API thực tế
+  // Ví dụ: useEffect(() => { fetchStatistics(); }, []);
+
   return (
     <div className="statistics-container">
       <h2>Thống kê bán hàng</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <div className="charts-section">
         <div className="chart-box">
           <h3>Biểu đồ doanh thu</h3>

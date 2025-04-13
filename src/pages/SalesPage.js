@@ -1,30 +1,38 @@
-import React, { useState } from 'react';
-import SidebarSale from '../components/Sales/SideBarSale';
+import React, { useState, useEffect } from 'react';
+import { getDrinks, getTables, createOrder, createPayment } from '../api/api';
+import Header from '../components/Sales/Header';
+// import SidebarSale from '../components/Sales/SideBarSale';
 import ProductList from '../components/Sales/ProductList';
-import Cart from '../components/Sales/Cart'; // Import Cart
-// import '../styles/SalesPage.css';
+import Cart from '../components/Sales/Cart';
 
 const SalesPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [cartItems, setCartItems] = useState([]); // State để quản lý giỏ hàng
+  const [drinks, setDrinks] = useState([]);
+  const [selectedTable, setSelectedTable] = useState(null);
+  const [cartItems, setCartItems] = useState([]);
+  const [category, setCategory] = useState('all');
+  const [error, setError] = useState('');
 
-  // Dữ liệu sản phẩm mẫu
-  const allProducts = [
-    { id: 1, name: 'Pizza Margherita', price: 150000, category: 'pizza', image: require(`../assets/images/image01.jpg`) },
-    { id: 2, name: 'Cà phê sữa đá', price: 30000, category: 'drink', image: require(`../assets/images/image02.jpg`) },
-    { id: 3, name: 'Phở bò', price: 60000, category: 'main', image: require(`../assets/images/image03.jpg`) },
-    { id: 4, name: 'Bánh ngọt', price: 30000, category: 'dessert', image: require(`../assets/images/image04.jpg`) },
-    { id: 5, name: 'Trà sữa trân châu', price: 45000, category: 'drink', image: require(`../assets/images/image05.jpg`) },
-    { id: 6, name: 'Pizza Pepperoni', price: 170000, category: 'pizza', image: require(`../assets/images/image06.jpg`) },
-  ];
+  // Lấy danh sách đồ uống và bàn
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const drinksData = await getDrinks(); // Gọi API /api/v1/drinks
+        console.log(drinksData)
+        setDrinks(drinksData);
+      } catch (err) {
+        setError('Failed to load data: ' + (err.message || 'Server error'));
+      }
+    };
+    fetchData();
+  }, []);
 
-  // Lọc sản phẩm theo danh mục
-  const filteredProducts =
-    selectedCategory === 'all'
-      ? allProducts
-      : allProducts.filter((product) => product.category === selectedCategory);
+  // Lọc đồ uống theo danh mục
+  const filteredDrinks = drinks.filter((drink) => {
+    if (category === 'all') return true;
+    return drink.category === category;
+  });
 
-  // Hàm thêm sản phẩm vào giỏ hàng
+  // Thêm vào giỏ hàng
   const addToCart = (product) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === product.id);
@@ -37,14 +45,59 @@ const SalesPage = () => {
     });
   };
 
+  // Tạo đơn hàng và thanh toán
+  const handleCheckout = async () => {
+    if (!selectedTable) {
+      setError('Please select a table');
+      return;
+    }
+    if (cartItems.length === 0) {
+      setError('Cart is empty');
+      return;
+    }
+
+    try {
+      const orderData = {
+        tableId: selectedTable.id,
+        items: cartItems.map((item) => ({
+          drinkId: item.id,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        total: cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+      };
+      const order = await createOrder(orderData); // Gọi API /api/v1/orders
+
+      const paymentData = {
+        orderId: order.id,
+        amount: order.total,
+      };
+      const payment = await createPayment(paymentData); // Gọi API /api/v1/payments/create-payment
+
+      if (payment.paymentUrl) {
+        window.location.href = payment.paymentUrl;
+      } else {
+        alert('Order created successfully!');
+        setCartItems([]);
+        setSelectedTable(null);
+      }
+    } catch (err) {
+      setError('Failed to create order: ' + (err.message || 'Server error'));
+    }
+  };
+
   return (
-    <div className="sales-page-container">
-      <SidebarSale setCategory={setSelectedCategory} />
-      <div className="sales-page-content">
-        <h2>Danh sách sản phẩm</h2>
-        <ProductList products={filteredProducts} addToCart={addToCart} />
+    <div className="sales-page">
+      {/* <Header /> */}
+      <div className="sales-content">
+        {/* <SidebarSale setCategory={setCategory} /> */}
+        <div className="sales-main">
+          {/* <h2>Sales Page</h2> */}
+          {error && <p className="error-message">{error}</p>}
+          <ProductList products={filteredDrinks} addToCart={addToCart} />
+          <Cart cartItems={cartItems} setCartItems={setCartItems} handleCheckout={handleCheckout} />
+        </div>
       </div>
-      <Cart cartItems={cartItems} setCartItems={setCartItems} />
     </div>
   );
 };

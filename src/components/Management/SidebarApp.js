@@ -3,10 +3,9 @@ import Sidebar from '../Sidebar';
 import Statistics from './Statistics';
 import OrderHistory from './OrderHistory';
 import StaffManagement from './StaffManagement';
-import ProductManagement from './ProductManagement.js';
+import ProductManagement from './ProductManagement';
 import TableManagementPage from './TableManagementPage';
-import IngredientManagementPage from './IngredientManagementPage'; // Import trang mới
-// import '../styles/SidebarApp.css';
+import IngredientManagementPage from './IngredientManagementPage';
 
 const SidebarApp = () => {
   const [activeFeature, setActiveFeature] = useState('statistics');
@@ -17,7 +16,7 @@ const SidebarApp = () => {
     { icon: 'fa-users', label: 'Quản lý nhân viên', feature: 'staffManagement' },
     { icon: 'fa-box', label: 'Quản lý sản phẩm', feature: 'productManagement' },
     { icon: 'fa-table', label: 'Quản lý bàn', feature: 'tableManagement' },
-    { icon: 'fa-warehouse', label: 'Quản lý nhập nguyên liệu', feature: 'ingredientManagement' }, // Thêm mục mới
+    { icon: 'fa-warehouse', label: 'Quản lý nhập nguyên liệu', feature: 'ingredientManagement' },
   ];
 
   const renderContent = () => {
@@ -33,7 +32,7 @@ const SidebarApp = () => {
       case 'tableManagement':
         return <TableManagementPage />;
       case 'ingredientManagement':
-        return <IngredientManagementPage />; // Hiển thị IngredientManagementPage
+        return <IngredientManagementPage />;
       default:
         return <Statistics />;
     }

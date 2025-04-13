@@ -1,81 +1,130 @@
+/* src/components/Management/TableCart.css */
 .table-cart-container {
-    width: 300px;
-    background-color: #f9f9f9;
-    border-left: 1px solid #ddd;
-    padding: 20px;
-    overflow-y: auto;
-  }
-  
-  .table-cart-title {
-    margin-bottom: 15px;
-    font-size: 20px;
-    color: #333;
-  }
-  
-  .table-cart-actions {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .table-cart-actions button {
-    padding: 8px 12px;
-    background-color: #ff6347;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .table-cart-actions button:hover {
-    background-color: #e5533d;
-  }
-  
-  .table-cart-items {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 20px 0;
-  }
-  
-  .table-cart-item {
-    display: flex;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .table-cart-item-image {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    margin-right: 10px;
-    border-radius: 5px;
-  }
-  
-  .table-cart-item-details {
-    flex: 1;
-  }
-  
-  .table-cart-item-name {
-    display: block;
-    font-size: 16px;
-    color: #333;
-  }
-  
-  .table-cart-item-price {
-    font-size: 14px;
-    color: #777;
-  }
-  
-  .table-cart-item-quantity {
-    font-size: 14px;
-    color: #333;
-  }
-  
-  .table-cart-total {
-    display: flex;
-    justify-content: space-between;
-    font-size: 16px;
-    font-weight: bold;
-    margin-top: 20px;
-  }
+  padding: 20px;
+  background-color: #f9fafb;
+  border-left: 1px solid #e5e7eb;
+}
+
+.table-cart {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.table-cart-title {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.table-cart-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.table-cart-actions button {
+  padding: 10px 15px;
+  font-size: 1rem;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.table-cart-actions button:nth-child(1) {
+  background-color: #10b981;
+}
+
+.table-cart-actions button:nth-child(1):hover {
+  background-color: #059669;
+}
+
+.table-cart-actions button:nth-child(2) {
+  background-color: #3b82f6;
+}
+
+.table-cart-actions button:nth-child(2):hover {
+  background-color: #2563eb;
+}
+
+.table-cart-actions button:nth-child(3) {
+  background-color: #f59e0b;
+}
+
+.table-cart-actions button:nth-child(3):hover {
+  background-color: #d97706;
+}
+
+/* Style cho nút vô hiệu hóa */
+.table-cart-actions button:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.delivery-success-message {
+  color: #10b981;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.table-cart-items {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+}
+
+.table-cart-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.delivery-checkbox {
+  margin-right: 10px;
+}
+
+.table-cart-item-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-right: 15px;
+}
+
+.table-cart-item-details {
+  flex: 1;
+}
+
+.table-cart-item-name {
+  display: block;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.table-cart-item-name.delivered {
+  text-decoration: line-through;
+  color: #666;
+}
+
+.table-cart-item-price {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.table-cart-item-quantity {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.table-cart-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.2rem;
+  color: #333;
+  padding-top: 10px;
+  border-top: 1px solid #e5e7eb;
+}

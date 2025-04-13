@@ -1,55 +1,11 @@
-import React, { useState } from 'react';
-import image01 from '../../assets/images/image01.jpg';
-import image02 from '../../assets/images/image02.jpg';
-import image03 from '../../assets/images/image03.jpg';
+import React, { useState, useEffect } from 'react';
+import { getRecipes, createRecipe, updateRecipe, deleteRecipe, getIngredients } from '../../api/api';
 
 const ProductManagement = () => {
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: 'Grill Sandwich',
-      status: 'In Stock',
-      productId: '6675941',
-      quantity: 50,
-      price: 20.00,
-      category: 'Fast Food',
-      image: image01,
-      ingredients: [
-        { id: 1, name: 'Bột mì', quantity: 0.2, unit: 'kg' },
-        { id: 2, name: 'Phô mai', quantity: 0.1, unit: 'kg' },
-      ],
-    },
-    {
-      id: 2,
-      name: 'Chicken Poppers',
-      status: 'In Stock',
-      productId: '6780952',
-      quantity: 40,
-      price: 30.00,
-      category: 'Fast Food',
-      image: image02,
-      ingredients: [
-        { id: 4, name: 'Thịt bò', quantity: 0.15, unit: 'kg' },
-      ],
-    },
-    {
-      id: 3,
-      name: 'Bison Burgers',
-      status: 'In Stock',
-      productId: '6897163',
-      quantity: 40,
-      price: 40.00,
-      category: 'Fast Food',
-      image: image03,
-      ingredients: [
-        { id: 4, name: 'Thịt bò', quantity: 0.2, unit: 'kg' },
-        { id: 3, name: 'Sốt cà chua', quantity: 0.05, unit: 'lít' },
-      ],
-    },
-  ]);
-
+  const [products, setProducts] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isIngredientFormOpen, setIsIngredientFormOpen] = useState(false); // Trạng thái mở form chọn nguyên liệu
+  const [isIngredientFormOpen, setIsIngredientFormOpen] = useState(false);
   const [formData, setFormData] = useState({
     id: null,
     name: '',
@@ -59,18 +15,49 @@ const ProductManagement = () => {
     price: 0,
     category: 'Fast Food',
     image: null,
-    ingredients: [], // Thêm danh sách nguyên liệu vào formData
+    ingredients: [],
   });
   const [isEditMode, setIsEditMode] = useState(false);
+  const [error, setError] = useState('');
 
-  // Danh sách nguyên liệu có sẵn (tương tự như trong IngredientManagementPage)
-  const availableIngredients = [
-    { id: 1, name: 'Bột mì', quantity: 50, unit: 'kg' },
-    { id: 2, name: 'Phô mai', quantity: 20, unit: 'kg' },
-    { id: 3, name: 'Sốt cà chua', quantity: 15, unit: 'lít' },
-    { id: 4, name: 'Thịt bò', quantity: 10, unit: 'kg' },
-    { id: 5, name: 'Trân châu', quantity: 5, unit: 'kg' },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const recipesData = await getRecipes();
+        const ingredientsData = await getIngredients();
+
+        const formattedRecipes = recipesData.map((recipe) => ({
+          id: recipe.id,
+          name: recipe.name || 'Unknown',
+          status: recipe.status || 'In Stock',
+          productId: recipe.productId || `PROD-${recipe.id}`,
+          quantity: recipe.quantity || 0,
+          price: recipe.price || 0,
+          category: recipe.category || 'Fast Food',
+          image: recipe.image || null,
+          ingredients: (recipe.ingredients || []).map((ingredient) => ({
+            id: ingredient.id,
+            name: ingredient.name || 'Unknown',
+            quantity: ingredient.quantity || 0,
+            unit: ingredient.unit || 'unit',
+          })),
+        }));
+
+        const formattedIngredients = ingredientsData.map((ingredient) => ({
+          id: ingredient.id,
+          name: ingredient.name || 'Unknown',
+          quantity: ingredient.quantity || 0,
+          unit: ingredient.unit || 'unit',
+        }));
+
+        setProducts(formattedRecipes);
+        setIngredients(formattedIngredients);
+      } catch (err) {
+        setError('Failed to load data: ' + err.message);
+      }
+    };
+    fetchData();
+  }, []);
 
   const openAddForm = () => {
     setFormData({
@@ -132,41 +119,75 @@ const ProductManagement = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isEditMode) {
-      // Cập nhật sản phẩm
-      setProducts((prev) =>
-        prev.map((product) =>
-          product.id === formData.id ? { ...product, ...formData } : product
-        )
-      );
-    } else {
-      // Thêm sản phẩm mới
-      const newProduct = {
-        ...formData,
-        id: products.length + 1,
-        image: formData.image || image01,
-      };
-      setProducts((prev) => [...prev, newProduct]);
+    try {
+      if (isEditMode) {
+        const updatedProduct = await updateRecipe(formData.id, formData);
+        const formattedUpdatedProduct = {
+          id: updatedProduct.id,
+          name: updatedProduct.name || 'Unknown',
+          status: updatedProduct.status || 'In Stock',
+          productId: updatedProduct.productId || `PROD-${updatedProduct.id}`,
+          quantity: updatedProduct.quantity || 0,
+          price: updatedProduct.price || 0,
+          category: updatedProduct.category || 'Fast Food',
+          image: updatedProduct.image || null,
+          ingredients: (updatedProduct.ingredients || []).map((ingredient) => ({
+            id: ingredient.id,
+            name: ingredient.name || 'Unknown',
+            quantity: ingredient.quantity || 0,
+            unit: ingredient.unit || 'unit',
+          })),
+        };
+        setProducts((prev) =>
+          prev.map((product) => (product.id === formData.id ? formattedUpdatedProduct : product))
+        );
+      } else {
+        const newProduct = await createRecipe(formData);
+        const formattedNewProduct = {
+          id: newProduct.id,
+          name: newProduct.name || 'Unknown',
+          status: newProduct.status || 'In Stock',
+          productId: newProduct.productId || `PROD-${newProduct.id}`,
+          quantity: newProduct.quantity || 0,
+          price: newProduct.price || 0,
+          category: newProduct.category || 'Fast Food',
+          image: newProduct.image || null,
+          ingredients: (newProduct.ingredients || []).map((ingredient) => ({
+            id: ingredient.id,
+            name: ingredient.name || 'Unknown',
+            quantity: ingredient.quantity || 0,
+            unit: ingredient.unit || 'unit',
+          })),
+        };
+        setProducts((prev) => [...prev, formattedNewProduct]);
+      }
+      closeForm();
+    } catch (err) {
+      setError('Failed to save product: ' + err.message);
     }
-    closeForm();
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
-      setProducts((prev) => prev.filter((product) => product.id !== id));
+      try {
+        await deleteRecipe(id);
+        setProducts((prev) => prev.filter((product) => product.id !== id));
+      } catch (err) {
+        setError('Failed to delete product: ' + err.message);
+      }
     }
   };
 
   return (
     <div className="product-management-container">
       <h2>Quản lý sản phẩm</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <button className="add-product-button" onClick={openAddForm}>
         Thêm sản phẩm
       </button>
 
-      {/* Bảng danh sách sản phẩm */}
       <table className="product-table">
         <thead>
           <tr>
@@ -184,7 +205,7 @@ const ProductManagement = () => {
             <tr key={product.id}>
               <td>
                 <div className="product-info">
-                  <img src={product.image} alt={product.name} className="product-image" />
+                  <img src={product.image || 'https://via.placeholder.com/150'} alt={product.name} className="product-image" />
                   <span>{product.name}</span>
                 </div>
               </td>
@@ -222,7 +243,6 @@ const ProductManagement = () => {
         </tbody>
       </table>
 
-      {/* Form thêm/sửa sản phẩm */}
       {isFormOpen && (
         <div className="form-overlay">
           <div className="form-container">
@@ -359,7 +379,7 @@ const ProductManagement = () => {
                   <div className="ingredient-list">
                     <h4>Danh sách nguyên liệu</h4>
                     <div className="ingredient-grid">
-                      {availableIngredients.map((ingredient) => (
+                      {ingredients.map((ingredient) => (
                         <div
                           key={ingredient.id}
                           className={`ingredient-item ${

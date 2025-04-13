@@ -1,11 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import SalesPage from './pages/SalesPage';
 import ManagementPage from './pages/ManagementPage';
+import { isAuthenticated } from './api/auth';
 import './styles/Header.css';
 import './styles/styles.css';
-import './styles/SideBarSale.css';
+// import './styles/SideBarSale.css';
 import './styles/OrderHistory.css';
 import './styles/Statistics.css';
 import './styles/Cart.css';
@@ -16,20 +17,39 @@ import './styles/Employee.css';
 import './styles/SideBarApp.css';
 import './styles/Login.css';
 import './styles/ProductManagement.css';
-import './styles/TableManagementPage.css'; // Thêm CSS cho TableManagementPage
+import './styles/TableManagementPage.css';
 import './styles/TableList.css';
 import './styles/TableCart.css';
 import './styles/IngredientManagementPage.css';
-import './styles/ReceiptList.css'; // Thêm CSS cho ReceiptList
-import './styles/IngredientSelection.css'; // Thêm CSS cho IngredientSelection
+import './styles/ReceiptList.css';
+import './styles/IngredientSelection.css';
+
+// Component bảo vệ route
+const ProtectedRoute = ({ children }) => {
+  return isAuthenticated() ? children : <Navigate to="/" />;
+};
 
 const App = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/sales" element={<SalesPage />} />
-        <Route path="/management" element={<ManagementPage />} />
+        <Route
+          path="/sales"
+          element={
+            <ProtectedRoute>
+              <SalesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/management"
+          element={
+            <ProtectedRoute>
+              <ManagementPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

@@ -1,35 +1,104 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getTables, updateTable, createOrder } from '../../api/api';
+import { getToken } from '../../api/auth';
 import TableList from './TableList';
 import TableCart from './TableCart';
 
-const TableManagementPage = () => {
-  const [selectedTable, setSelectedTable] = useState(null); // Quản lý bàn được chọn
-  const [tables, setTables] = useState([
-    { id: 1, name: 'Bàn 1', status: 'Đang sử dụng', total: 330000, cartItems: [
-      { id: 1, name: 'Pizza Margherita', price: 150000, quantity: 2, image: require(`../../assets/images/image01.jpg`) },
-      { id: 2, name: 'Cà phê sữa đá', price: 30000, quantity: 1, image: require(`../../assets/images/image02.jpg`) },
-    ]},
-    { id: 2, name: 'Bàn 2', status: 'Trống', total: 0, cartItems: [] },
-    { id: 3, name: 'Bàn 3', status: 'Đã thanh toán', total: 200000, cartItems: [] },
-    { id: 4, name: 'Bàn 4', status: 'Đang sử dụng', total: 45000, cartItems: [
-      { id: 5, name: 'Trà sữa trân châu', price: 45000, quantity: 1, image: require(`../../assets/images/image05.jpg`) },
-    ]},
-  ]);
 
-  // Hàm chọn bàn
+const TableManagementPage = () => {
+  const [selectedTable, setSelectedTable] = useState(null);
+  const [tables, setTables] = useState([]);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = getToken();
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    const fetchTables = async () => {
+      try {
+        const tablesData = await getTables();
+        if (!Array.isArray(tablesData)) {
+          throw new Error('Invalid data format: Expected an array of tables');
+        }
+        // Lọc các phần tử không hợp lệ và định dạng dữ liệu
+        const formattedTables = tablesData
+          .filter((table) => table && typeof table === 'object' && table.id) // Chỉ giữ các table hợp lệ
+          .map((table) => ({
+            id: table.id,
+            name: table.name || `Bàn ${table.id}`,
+            status: table.status || 'Trống',
+            total: table.total || 0,
+            cartItems: (table.cartItems || []).map((item) => ({
+              ...item,
+              delivered: item.delivered || false,
+            })),
+          }));
+        setTables(formattedTables);
+      } catch (err) {
+        setError('Failed to load tables: ' + (err.message || 'Unknown error'));
+      }
+    };
+    fetchTables();
+  }, []);
+
   const handleSelectTable = (table) => {
     setSelectedTable(table);
   };
 
-  // Hàm xử lý trạng thái bàn
-  const handleTableStatus = (tableId, newStatus) => {
-    setTables((prevTables) =>
-      prevTables.map((table) =>
-        table.id === tableId ? { ...table, status: newStatus, cartItems: newStatus === 'Đã thanh toán' ? [] : table.cartItems, total: newStatus === 'Đã thanh toán' ? 0 : table.total } : table
-      )
-    );
-    if (newStatus === 'Đã thanh toán' || newStatus === 'Hủy bàn') {
-      setSelectedTable(null); // Xóa bàn được chọn nếu thanh toán hoặc hủy
+  const handleTableStatus = async (tableId, newStatus) => {
+    try {
+      if (newStatus === 'Đã thanh toán') {
+        const table = tables.find((t) => t.id === tableId);
+        if (table && table.cartItems && table.cartItems.length > 0) {
+          const orderData = {
+            tableId: table.id,
+            items: table.cartItems.map((item) => ({
+              drinkId: item.id,
+              quantity: item.quantity,
+              price: item.price,
+            })),
+            total: table.total,
+            status: 'Unpaid',
+          };
+          await createOrder(orderData);
+        }
+      }
+
+      const updatedStatus = newStatus === 'Nhận khách mới' ? 'Trống' : newStatus;
+
+      await updateTable(tableId, {
+        status: updatedStatus,
+        cartItems: newStatus === 'Đã thanh toán' || newStatus === 'Nhận khách mới' ? [] : undefined,
+        total: newStatus === 'Đã thanh toán' || newStatus === 'Nhận khách mới' ? 0 : undefined,
+      });
+
+      setTables((prevTables) =>
+        prevTables.map((table) =>
+          table.id === tableId
+            ? {
+                ...table,
+                status: updatedStatus,
+                cartItems:
+                  newStatus === 'Đã thanh toán' || newStatus === 'Nhận khách mới'
+                    ? []
+                    : table.cartItems,
+                total: newStatus === 'Đã thanh toán' || newStatus === 'Nhận khách mới' ? 0 : table.total,
+              }
+            : table
+        )
+      );
+
+      if (newStatus === 'Đã thanh toán' || newStatus === 'Nhận khách mới') {
+        setSelectedTable(null);
+      }
+    } catch (err) {
+      setError('Failed to update table status: ' + (err.message || 'Unknown error'));
     }
   };
 
@@ -37,13 +106,11 @@ const TableManagementPage = () => {
     <div className="table-management-page-container">
       <div className="table-management-content">
         <h2>Danh sách bàn</h2>
+        {error && <p className="error-message">{error}</p>}
         <TableList tables={tables} onSelectTable={handleSelectTable} />
       </div>
       {selectedTable && (
-        <TableCart
-          table={selectedTable}
-          handleTableStatus={handleTableStatus}
-        />
+        <TableCart table={selectedTable} handleTableStatus={handleTableStatus} />
       )}
     </div>
   );

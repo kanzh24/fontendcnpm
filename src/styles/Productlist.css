@@ -1,6 +1,12 @@
 /* Product List */
 .product-list-container {
     padding: 2rem;
+    /* left: 0; */
+    position: absolute;
+    left: 15px;
+}
+.product-grid{
+    padding: 0;
 }
 
 /* Bố cục lưới */
@@ -70,4 +76,12 @@
 
 .product-list-container .product-item button:hover {
     background-color: #ff3e2d;
+}
+
+/* còn lại */
+.product-list-container .product-item h4 {
+    font-size: 0.9rem;
+    margin: 10px 0;
+    color: #341402;
+    font-weight: 500;
 }

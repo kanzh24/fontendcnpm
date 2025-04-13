@@ -1,35 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getIngredients, getStockImports, createStockImport } from '../../api/api';
 import ReceiptList from './ReceiptList';
 import IngredientSelection from './IngredientSelection';
 
 const IngredientManagementPage = () => {
-  const [isAddingReceipt, setIsAddingReceipt] = useState(false); // Trạng thái thêm phiếu nhập
-  const [currentReceipt, setCurrentReceipt] = useState([]); // Phiếu nhập hiện tại đang tạo
-  const [receipts, setReceipts] = useState([
-    { id: 1, date: '2025-04-09', items: [
-      { id: 1, name: 'Bột mì', quantity: 10, unit: 'kg' },
-      { id: 2, name: 'Phô mai', quantity: 5, unit: 'kg' },
-    ]},
-    { id: 2, date: '2025-04-08', items: [
-      { id: 3, name: 'Sốt cà chua', quantity: 3, unit: 'lít' },
-    ]},
-  ]); // Danh sách phiếu nhập cũ
+  const [isAddingReceipt, setIsAddingReceipt] = useState(false);
+  const [currentReceipt, setCurrentReceipt] = useState([]);
+  const [receipts, setReceipts] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
+  const [error, setError] = useState('');
 
-  const [ingredients, setIngredients] = useState([
-    { id: 1, name: 'Bột mì', quantity: 50, unit: 'kg' },
-    { id: 2, name: 'Phô mai', quantity: 20, unit: 'kg' },
-    { id: 3, name: 'Sốt cà chua', quantity: 15, unit: 'lít' },
-    { id: 4, name: 'Thịt bò', quantity: 10, unit: 'kg' },
-    { id: 5, name: 'Trân châu', quantity: 5, unit: 'kg' },
-  ]); // Danh sách nguyên liệu
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const ingredientsData = await getIngredients();
+        const stockImportsData = await getStockImports();
+        
+        // Ensure ingredients have the expected structure
+        const formattedIngredients = ingredientsData.map((ingredient) => ({
+          id: ingredient.id,
+          name: ingredient.name || 'Unknown',
+          quantity: ingredient.quantity || 0,
+          unit: ingredient.unit || 'unit',
+        }));
 
-  // Bắt đầu tạo phiếu nhập mới
+        // Ensure stock imports have the expected structure
+        const formattedStockImports = stockImportsData.map((stockImport) => ({
+          id: stockImport.id,
+          date: stockImport.date || new Date().toISOString().split('T')[0],
+          items: (stockImport.items || []).map((item) => ({
+            id: item.id,
+            name: item.name || 'Unknown',
+            quantity: item.quantity || 0,
+            unit: item.unit || 'unit',
+          })),
+        }));
+
+        setIngredients(formattedIngredients);
+        setReceipts(formattedStockImports);
+      } catch (err) {
+        setError('Failed to load data: ' + err.message);
+      }
+    };
+    fetchData();
+  }, []);
+
   const handleAddReceipt = () => {
     setIsAddingReceipt(true);
     setCurrentReceipt([]);
   };
 
-  // Thêm nguyên liệu vào phiếu nhập hiện tại
   const handleAddToReceipt = (ingredient, quantity) => {
     setCurrentReceipt((prev) => [
       ...prev,
@@ -37,32 +57,42 @@ const IngredientManagementPage = () => {
     ]);
   };
 
-  // Xác nhận hoàn tất phiếu nhập
-  const handleConfirmReceipt = () => {
+  const handleConfirmReceipt = async () => {
     if (currentReceipt.length > 0) {
-      const newReceipt = {
-        id: receipts.length + 1,
-        date: new Date().toISOString().split('T')[0], // Lấy ngày hiện tại
-        items: currentReceipt,
-      };
-      setReceipts((prev) => [...prev, newReceipt]);
+      try {
+        const newReceipt = {
+          date: new Date().toISOString().split('T')[0],
+          items: currentReceipt,
+        };
+        const createdReceipt = await createStockImport(newReceipt);
+        setReceipts((prev) => [...prev, {
+          id: createdReceipt.id,
+          date: createdReceipt.date || new Date().toISOString().split('T')[0],
+          items: (createdReceipt.items || []).map((item) => ({
+            id: item.id,
+            name: item.name || 'Unknown',
+            quantity: item.quantity || 0,
+            unit: item.unit || 'unit',
+          })),
+        }]);
 
-      // Cập nhật số lượng nguyên liệu
-      setIngredients((prevIngredients) =>
-        prevIngredients.map((ingredient) => {
-          const addedItem = currentReceipt.find((item) => item.id === ingredient.id);
-          if (addedItem) {
-            return { ...ingredient, quantity: ingredient.quantity + addedItem.quantity };
-          }
-          return ingredient;
-        })
-      );
+        // Refresh ingredients after creating a stock import
+        const updatedIngredients = await getIngredients();
+        const formattedIngredients = updatedIngredients.map((ingredient) => ({
+          id: ingredient.id,
+          name: ingredient.name || 'Unknown',
+          quantity: ingredient.quantity || 0,
+          unit: ingredient.unit || 'unit',
+        }));
+        setIngredients(formattedIngredients);
+      } catch (err) {
+        setError('Failed to create stock import: ' + err.message);
+      }
     }
     setIsAddingReceipt(false);
     setCurrentReceipt([]);
   };
 
-  // Hủy tạo phiếu nhập
   const handleCancelReceipt = () => {
     setIsAddingReceipt(false);
     setCurrentReceipt([]);
@@ -72,6 +102,7 @@ const IngredientManagementPage = () => {
     <div className="ingredient-management-page-container">
       <div className="ingredient-management-content">
         <h2>Quản lý nhập nguyên liệu</h2>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
         {!isAddingReceipt ? (
           <>
             <button className="add-receipt-button" onClick={handleAddReceipt}>

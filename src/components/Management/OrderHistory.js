@@ -1,55 +1,39 @@
-import React, { useState } from 'react';
-const OrderHistory = () => {
-  const [orders, setOrders] = useState([
-    {
-      id: 20235,
-      status: 'Paid',
-      table: 12,
-      guests: 2,
-      amount: 150,
-      items: [
-        { id: 1, name: 'Pizza Margherita', price: 150000, quantity: 2, image: null },
-        { id: 2, name: 'Cà phê sữa đá', price: 30000, quantity: 1, image: null },
-      ],
-    },
-    {
-      id: 20236,
-      status: 'Unpaid',
-      table: 14,
-      guests: 4,
-      amount: 230,
-      items: [
-        { id: 3, name: 'Trà sữa trân châu', price: 45000, quantity: 3, image: null },
-        { id: 4, name: 'Bánh mì pate', price: 25000, quantity: 1, image: null },
-      ],
-    },
-    {
-      id: 20237,
-      status: 'Paid',
-      table: 16,
-      guests: 6,
-      amount: 450,
-      items: [
-        { id: 5, name: 'Nước cam ép', price: 35000, quantity: 2, image: null },
-        { id: 6, name: 'Phở bò', price: 60000, quantity: 1, image: null },
-      ],
-    },
-    {
-      id: 20238,
-      status: 'Unpaid',
-      table: 18,
-      guests: 3,
-      amount: 190,
-      items: [
-        { id: 7, name: 'Coca Cola', price: 20000, quantity: 2, image: null },
-        { id: 8, name: 'Bánh ngọt', price: 30000, quantity: 1, image: null },
-      ],
-    },
-  ]);
+import React, { useState, useEffect } from 'react';
+import { getOrders, updateOrder } from '../../api/api';
 
+const OrderHistory = () => {
+  const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [error, setError] = useState('');
 
   const fallbackImage = require(`../../assets/images/image01.jpg`);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const ordersData = await getOrders();
+        // console.log(ordersData)
+        const formattedOrders = ordersData.map((order) => ({
+          id: order.id,
+          status: order.status || 'Unknown',
+          tableId: order.tableId || 'N/A', // Adjust for API response
+          guests: order.guests || 'N/A',
+          total: order.total || 0,
+          items: (order.items || []).map((item) => ({
+            id: item.id,
+            name: item.name || (item.drinkId ? `Drink #${item.drinkId}` : 'Unknown'),
+            price: item.price || 0,
+            quantity: item.quantity || 1,
+            image: item.image || null,
+          })),
+        }));
+        setOrders(formattedOrders);
+      } catch (err) {
+        setError('Failed to load orders: ' + err.message);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   const selectOrder = (order) => {
     setSelectedOrder(order);
@@ -58,41 +42,94 @@ const OrderHistory = () => {
     document.querySelector(`[data-order-id="${order.id}"]`).classList.add('active');
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (selectedOrder.status === 'Unpaid') {
-      const updatedOrders = orders.map((order) =>
-        order.id === selectedOrder.id ? { ...order, status: 'Confirmed' } : order
-      );
-      setOrders(updatedOrders);
-      setSelectedOrder({ ...selectedOrder, status: 'Confirmed' });
+      try {
+        const updatedOrder = await updateOrder(selectedOrder.id, { status: 'Confirmed' });
+        const formattedUpdatedOrder = {
+          id: updatedOrder.id,
+          status: updatedOrder.status || 'Unknown',
+          tableId: updatedOrder.tableId || 'N/A',
+          guests: updatedOrder.guests || 'N/A',
+          total: updatedOrder.total || 0,
+          items: (updatedOrder.items || []).map((item) => ({
+            id: item.id,
+            name: item.name || (item.drinkId ? `Drink #${item.drinkId}` : 'Unknown'),
+            price: item.price || 0,
+            quantity: item.quantity || 1,
+            image: item.image || null,
+          })),
+        };
+        setOrders((prev) =>
+          prev.map((order) => (order.id === selectedOrder.id ? formattedUpdatedOrder : order))
+        );
+        setSelectedOrder(formattedUpdatedOrder);
+      } catch (err) {
+        setError('Failed to confirm order: ' + err.message);
+      }
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     if (window.confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
-      const updatedOrders = orders.map((order) =>
-        order.id === selectedOrder.id && order.status !== 'Cancelled'
-          ? { ...order, status: 'Cancelled' }
-          : order
-      );
-      setOrders(updatedOrders);
-      setSelectedOrder({ ...selectedOrder, status: 'Cancelled' });
+      try {
+        const updatedOrder = await updateOrder(selectedOrder.id, { status: 'Cancelled' });
+        const formattedUpdatedOrder = {
+          id: updatedOrder.id,
+          status: updatedOrder.status || 'Unknown',
+          tableId: updatedOrder.tableId || 'N/A',
+          guests: updatedOrder.guests || 'N/A',
+          total: updatedOrder.total || 0,
+          items: (updatedOrder.items || []).map((item) => ({
+            id: item.id,
+            name: item.name || (item.drinkId ? `Drink #${item.drinkId}` : 'Unknown'),
+            price: item.price || 0,
+            quantity: item.quantity || 1,
+            image: item.image || null,
+          })),
+        };
+        setOrders((prev) =>
+          prev.map((order) => (order.id === selectedOrder.id ? formattedUpdatedOrder : order))
+        );
+        setSelectedOrder(formattedUpdatedOrder);
+      } catch (err) {
+        setError('Failed to cancel order: ' + err.message);
+      }
     }
   };
 
-  const handleMarkAsPaid = () => {
+  const handleMarkAsPaid = async () => {
     if (selectedOrder.status === 'Unpaid') {
-      const updatedOrders = orders.map((order) =>
-        order.id === selectedOrder.id ? { ...order, status: 'Paid' } : order
-      );
-      setOrders(updatedOrders);
-      setSelectedOrder({ ...selectedOrder, status: 'Paid' });
+      try {
+        const updatedOrder = await updateOrder(selectedOrder.id, { status: 'Paid' });
+        const formattedUpdatedOrder = {
+          id: updatedOrder.id,
+          status: updatedOrder.status || 'Unknown',
+          tableId: updatedOrder.tableId || 'N/A',
+          guests: updatedOrder.guests || 'N/A',
+          total: updatedOrder.total || 0,
+          items: (updatedOrder.items || []).map((item) => ({
+            id: item.id,
+            name: item.name || (item.drinkId ? `Drink #${item.drinkId}` : 'Unknown'),
+            price: item.price || 0,
+            quantity: item.quantity || 1,
+            image: item.image || null,
+          })),
+        };
+        setOrders((prev) =>
+          prev.map((order) => (order.id === selectedOrder.id ? formattedUpdatedOrder : order))
+        );
+        setSelectedOrder(formattedUpdatedOrder);
+      } catch (err) {
+        setError('Failed to mark order as paid: ' + err.message);
+      }
     }
   };
 
   return (
     <div className="order-container">
       <h2>Lịch sử đơn hàng</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <div className="order-content">
         <div className="order-list">
           {orders.map((order) => (
@@ -109,9 +146,9 @@ const OrderHistory = () => {
                 </p>
               </div>
               <div className="bot">
-                <p>Bàn: {order.table}</p>
+                <p>Bàn: {order.tableId}</p>
                 <p>Số khách: {order.guests}</p>
-                <p className="amount">Tổng tiền: ${order.amount}</p>
+                <p className="amount">Tổng tiền: ${order.total}</p>
               </div>
             </div>
           ))}
@@ -140,9 +177,8 @@ const OrderHistory = () => {
               </ul>
               <div className="order-total">
                 <strong>Tổng cộng:</strong>
-                <span>{selectedOrder.amount.toLocaleString()} USD</span>
+                <span>{selectedOrder.total.toLocaleString()} USD</span>
               </div>
-              {/* Nút xử lý */}
               <div className="order-actions">
                 {selectedOrder.status === 'Unpaid' && (
                   <button className="confirm-button" onClick={handleConfirm}>

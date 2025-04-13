@@ -1,17 +1,33 @@
-import React, { useState } from 'react';
-// import '../styles/StaffManagement.css';
+import React, { useState, useEffect } from 'react';
+import { getEmployees, registerEmployee, updateEmployee, deleteEmployee } from '../../api/api';
 
 const StaffManagement = () => {
-  const [staffs, setStaffs] = useState([
-    { id: 1, name: 'Addie Mintra', orders: 250, spent: 550, gender: 'Male', address: '2403 Juddwood Drive' },
-    { id: 2, name: 'Manuel Laber', orders: 300, spent: 480, gender: 'Male', address: '3799 Glendale Avenue' },
-    { id: 3, name: 'Jack Amanda', orders: 240, spent: 320, gender: 'Male', address: '827 Wildwood Street' },
-    { id: 4, name: 'Stuam Clewed', orders: 450, spent: 300, gender: 'Male', address: '5056 Lindgren Village' },
-  ]);
-
+  const [staffs, setStaffs] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formData, setFormData] = useState({ id: null, name: '', gender: 'Male', address: '' });
   const [isEditMode, setIsEditMode] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchStaffs = async () => {
+      try {
+        const employeesData = await getEmployees();
+        console.log(employeesData)
+        const formattedEmployees = employeesData.map((employee) => ({
+          id: employee.id,
+          name: employee.name || 'Unknown',
+          orders: employee.orders || 0,
+          spent: employee.spent || 0,
+          gender: employee.gender || 'Male',
+          address: employee.address || 'N/A',
+        }));
+        setStaffs(formattedEmployees);
+      } catch (err) {
+        setError('Failed to load employees: ' + err.message);
+      }
+    };
+    fetchStaffs();
+  }, []);
 
   const openAddForm = () => {
     setFormData({ id: null, name: '', gender: 'Male', address: '' });
@@ -34,42 +50,63 @@ const StaffManagement = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isEditMode) {
-      // Cập nhật nhân viên
-      setStaffs((prev) =>
-        prev.map((staff) =>
-          staff.id === formData.id ? { ...staff, ...formData } : staff
-        )
-      );
-    } else {
-      // Thêm nhân viên mới
-      const newStaff = {
-        ...formData,
-        id: staffs.length + 1,
-        orders: 0, // Giá trị mặc định
-        spent: 0,  // Giá trị mặc định
-      };
-      setStaffs((prev) => [...prev, newStaff]);
+    try {
+      if (isEditMode) {
+        const updatedStaff = await updateEmployee(formData.id, formData);
+        const formattedUpdatedStaff = {
+          id: updatedStaff.id,
+          name: updatedStaff.name || 'Unknown',
+          orders: updatedStaff.orders || 0,
+          spent: updatedStaff.spent || 0,
+          gender: updatedStaff.gender || 'Male',
+          address: updatedStaff.address || 'N/A',
+        };
+        setStaffs((prev) =>
+          prev.map((staff) => (staff.id === formData.id ? formattedUpdatedStaff : staff))
+        );
+      } else {
+        const newStaff = await registerEmployee({
+          ...formData,
+          orders: 0,
+          spent: 0,
+        });
+        const formattedNewStaff = {
+          id: newStaff.id,
+          name: newStaff.name || 'Unknown',
+          orders: newStaff.orders || 0,
+          spent: newStaff.spent || 0,
+          gender: newStaff.gender || 'Male',
+          address: newStaff.address || 'N/A',
+        };
+        setStaffs((prev) => [...prev, formattedNewStaff]);
+      }
+      closeForm();
+    } catch (err) {
+      setError('Failed to save employee: ' + err.message);
     }
-    closeForm();
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm('Bạn có chắc muốn xóa nhân viên này?')) {
-      setStaffs((prev) => prev.filter((staff) => staff.id !== id));
+      try {
+        await deleteEmployee(id);
+        setStaffs((prev) => prev.filter((staff) => staff.id !== id));
+      } catch (err) {
+        setError('Failed to delete employee: ' + err.message);
+      }
     }
   };
 
   return (
     <div className="staff-management-container">
       <h2>Quản lý nhân viên</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <button className="add-staff-button" onClick={openAddForm}>
         Thêm nhân viên
       </button>
 
-      {/* Bảng danh sách nhân viên */}
       <table className="staff-table">
         <thead>
           <tr>
@@ -102,7 +139,6 @@ const StaffManagement = () => {
         </tbody>
       </table>
 
-      {/* Form thêm/sửa nhân viên */}
       {isFormOpen && (
         <div className="form-overlay">
           <div className="form-container">

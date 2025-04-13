@@ -1,10 +1,10 @@
-import React from 'react';
-import Sidebar from '../components/Management/Sibarapp';
+import React, { useState, useEffect } from 'react';
+import SidebarApp from '../components/Management/SidebarApp';
 
 const ManagementPage = () => {
   return (
-    <div className="management-page-container">
-      <Sidebar />
+    <div className="management-page">
+      <SidebarApp />
     </div>
   );
 };

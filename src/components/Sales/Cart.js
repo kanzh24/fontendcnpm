@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 const Cart = () => {
   const [cartItems, setCartItems] = useState([
-    { id: 1, name: 'Pizza Margherita', price: 150000, quantity: 2, image: null },
-    { id: 2, name: 'Cà phê sữa đá', price: 30000, quantity: 1, image: null },
-    // Loại bỏ các mục trùng lặp
+   
   ]);
 
   const fallbackImage = require(`../../assets/images/image01.jpg`);
