@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { updateTable } from '../../api/api';
 
-
 const TableCart = ({ table, handleTableStatus }) => {
-  // Kiểm tra table và table.cartItems
   const [cartItems, setCartItems] = useState(
     (table && table.cartItems && Array.isArray(table.cartItems)
       ? table.cartItems.map((item) => ({
@@ -14,8 +12,11 @@ const TableCart = ({ table, handleTableStatus }) => {
     ).filter(Boolean)
   );
   const [allDelivered, setAllDelivered] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(null); // 'complete' or 'cancel'
+  const [successMessage, setSuccessMessage] = useState('');
 
   const totalPrice = cartItems.reduce((total, item) => total + item.quantity * item.price, 0);
+  const hasDeliveredItem = cartItems.some((item) => item.delivered);
 
   useEffect(() => {
     const allItemsDelivered = cartItems.length > 0 && cartItems.every((item) => item.delivered);
@@ -35,6 +36,21 @@ const TableCart = ({ table, handleTableStatus }) => {
     }
   };
 
+  const handleConfirmAction = async (action) => {
+    try {
+      await handleTableStatus(table.id, action);
+      setSuccessMessage(
+        action === 'completed'
+          ? 'Đã hoàn tất thanh toán thành công!'
+          : 'Đã hủy bàn thành công!'
+      );
+      setShowConfirm(null);
+      setTimeout(() => setSuccessMessage(''), 3000); // Clear message after 3s
+    } catch (err) {
+      console.error(`Failed to ${action} table:`, err);
+    }
+  };
+
   if (!table || !table.id) {
     return null;
   }
@@ -43,23 +59,57 @@ const TableCart = ({ table, handleTableStatus }) => {
     <div className="table-cart-container">
       <div className="table-cart">
         <h3 className="table-cart-title">Giỏ hàng - {table.name || 'Không xác định'}</h3>
+        {successMessage && (
+          <p className="success-message">
+            {successMessage}
+          </p>
+        )}
         <div className="table-cart-actions">
           <button
-            onClick={() => handleTableStatus(table.id, 'Đã thanh toán')}
-            disabled={cartItems.length === 0}
-            className={cartItems.length === 0 ? 'disabled-button' : ''}
+            onClick={() => setShowConfirm('completed')}
+            disabled={!allDelivered || cartItems.length === 0}
+            className={`${
+              !allDelivered || cartItems.length === 0 ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
-            Thanh toán
+            Hoàn tất
           </button>
-          <button onClick={() => handleTableStatus(table.id, 'Chuyển bàn')}>
-            Chuyển bàn
-          </button>
-          <button onClick={() => handleTableStatus(table.id, 'Nhận khách mới')}>
-            Nhận khách mới
+          <button
+            onClick={() => setShowConfirm('canceled')}
+            disabled={hasDeliveredItem}
+            className={`${
+              hasDeliveredItem ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            Hủy bàn
           </button>
         </div>
         {allDelivered && cartItems.length > 0 && (
-          <p className="delivery-success-message">Đã giao thành công toàn bộ món!</p>
+          <p className="delivery-success-message">
+            Đã giao thành công toàn bộ món!
+          </p>
+        )}
+        {showConfirm && (
+          <div className="confirmation-dialog">
+            <div>
+              <p>
+                Bạn có chắc muốn{' '}
+                {showConfirm === 'completed' ? 'hoàn tất thanh toán' : 'hủy bàn'}?
+              </p>
+              <div className="flex justify-end mt-4">
+                <button
+                  onClick={() => setShowConfirm(null)}
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={() => handleConfirmAction(showConfirm)}
+                >
+                  Xác nhận
+                </button>
+              </div>
+            </div>
+          </div>
         )}
         <ul className="table-cart-items">
           {cartItems.length > 0 ? (
@@ -79,7 +129,9 @@ const TableCart = ({ table, handleTableStatus }) => {
                 />
                 <div className="table-cart-item-details">
                   <span
-                    className={`table-cart-item-name ${item.delivered ? 'delivered' : ''}`}
+                    className={`table-cart-item-name ${
+                      item.delivered ? 'line-through' : ''
+                    }`}
                   >
                     {item.name}
                   </span>
@@ -88,7 +140,7 @@ const TableCart = ({ table, handleTableStatus }) => {
                   </span>
                 </div>
                 <div className="table-cart-item-quantity">
-                  <span>Số lượng: {item.quantity}</span>
+                  <span>SL: {item.quantity}</span>
                 </div>
               </li>
             ))

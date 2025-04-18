@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getIngredients, getStockImports, createStockImport } from '../../api/api';
+import { getIngredients, getStockImports, createStockImport, getEmployees, getSuppliers } from '../../api/api';
 import ReceiptList from './ReceiptList';
 import IngredientSelection from './IngredientSelection';
 
@@ -8,6 +8,8 @@ const IngredientManagementPage = () => {
   const [currentReceipt, setCurrentReceipt] = useState([]);
   const [receipts, setReceipts] = useState([]);
   const [ingredients, setIngredients] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -15,29 +17,50 @@ const IngredientManagementPage = () => {
       try {
         const ingredientsData = await getIngredients();
         const stockImportsData = await getStockImports();
-        
-        // Ensure ingredients have the expected structure
+        const employeesData = await getEmployees();
+        const suppliersData = await getSuppliers();
+
+        // Định dạng ingredients
         const formattedIngredients = ingredientsData.map((ingredient) => ({
-          id: ingredient.id,
+          id: parseInt(ingredient.id), // Chuyển id thành int
           name: ingredient.name || 'Unknown',
-          quantity: ingredient.quantity || 0,
+          availableCount: ingredient.availableCount || '0',
           unit: ingredient.unit || 'unit',
+          supplierId: parseInt(ingredient.supplierId), // Chuyển supplierId thành int
+          supplier: ingredient.supplier,
         }));
 
-        // Ensure stock imports have the expected structure
+        // Định dạng stock imports
         const formattedStockImports = stockImportsData.map((stockImport) => ({
           id: stockImport.id,
-          date: stockImport.date || new Date().toISOString().split('T')[0],
-          items: (stockImport.items || []).map((item) => ({
+          createdAt: stockImport.createdAt || new Date().toISOString(),
+          employeeId: parseInt(stockImport.employeeId), // Chuyển employeeId thành int
+          employee: stockImport.employee,
+          supplierId: parseInt(stockImport.supplierId), // Chuyển supplierId thành int
+          supplier: stockImport.supplier,
+          totalCost: stockImport.totalCost || '0',
+          stockImportItems: (stockImport.stockImportItems || []).map((item) => ({
             id: item.id,
-            name: item.name || 'Unknown',
-            quantity: item.quantity || 0,
-            unit: item.unit || 'unit',
+            ingredientId: parseInt(item.ingredientId), // Chuyển ingredientId thành int
+            quantity: parseFloat(item.quantity) || 0, // Đảm bảo quantity là float
+            unitPrice: parseInt(item.unitPrice) || 0, // Đảm bảo unitPrice là int
           })),
+        }));
+
+        // Định dạng employees và suppliers
+        const formattedEmployees = employeesData.map((employee) => ({
+          ...employee,
+          id: parseInt(employee.id), // Chuyển id thành int
+        }));
+        const formattedSuppliers = suppliersData.map((supplier) => ({
+          ...supplier,
+          id: parseInt(supplier.id), // Chuyển id thành int
         }));
 
         setIngredients(formattedIngredients);
         setReceipts(formattedStockImports);
+        setEmployees(formattedEmployees);
+        setSuppliers(formattedSuppliers);
       } catch (err) {
         setError('Failed to load data: ' + err.message);
       }
@@ -50,39 +73,54 @@ const IngredientManagementPage = () => {
     setCurrentReceipt([]);
   };
 
-  const handleAddToReceipt = (ingredient, quantity) => {
+  const handleAddToReceipt = (ingredient, quantity, unitPrice) => {
     setCurrentReceipt((prev) => [
       ...prev,
-      { id: ingredient.id, name: ingredient.name, quantity, unit: ingredient.unit },
+      { id: ingredient.id, name: ingredient.name, quantity, unitPrice, unit: ingredient.unit },
     ]);
   };
 
-  const handleConfirmReceipt = async () => {
+  const handleConfirmReceipt = async (employeeId, supplierId) => {
     if (currentReceipt.length > 0) {
       try {
-        const newReceipt = {
-          date: new Date().toISOString().split('T')[0],
-          items: currentReceipt,
-        };
-        const createdReceipt = await createStockImport(newReceipt);
-        setReceipts((prev) => [...prev, {
-          id: createdReceipt.id,
-          date: createdReceipt.date || new Date().toISOString().split('T')[0],
-          items: (createdReceipt.items || []).map((item) => ({
-            id: item.id,
-            name: item.name || 'Unknown',
-            quantity: item.quantity || 0,
-            unit: item.unit || 'unit',
+        const stockImportData = {
+          employeeId, // Đã là int
+          supplierId, // Đã là int
+          stockImportItems: currentReceipt.map((item) => ({
+            ingredientId: item.id, // Đã là int
+            quantity: item.quantity, // Đã là float
+            unitPrice: item.unitPrice, // Đã là int
           })),
-        }]);
+        };
+        const createdReceipt = await createStockImport(stockImportData);
+        setReceipts((prev) => [
+          ...prev,
+          {
+            id: createdReceipt.id,
+            createdAt: createdReceipt.createdAt || new Date().toISOString(),
+            employeeId: parseInt(createdReceipt.employeeId),
+            employee: createdReceipt.employee,
+            supplierId: parseInt(createdReceipt.supplierId),
+            supplier: createdReceipt.supplier,
+            totalCost: createdReceipt.totalCost || '0',
+            stockImportItems: (createdReceipt.stockImportItems || []).map((item) => ({
+              id: item.id,
+              ingredientId: parseInt(item.ingredientId),
+              quantity: parseFloat(item.quantity) || 0,
+              unitPrice: parseInt(item.unitPrice) || 0,
+            })),
+          },
+        ]);
 
-        // Refresh ingredients after creating a stock import
+        // Refresh ingredients sau khi tạo phiếu nhập
         const updatedIngredients = await getIngredients();
         const formattedIngredients = updatedIngredients.map((ingredient) => ({
-          id: ingredient.id,
+          id: parseInt(ingredient.id),
           name: ingredient.name || 'Unknown',
-          quantity: ingredient.quantity || 0,
+          availableCount: ingredient.availableCount || '0',
           unit: ingredient.unit || 'unit',
+          supplierId: parseInt(ingredient.supplierId),
+          supplier: ingredient.supplier,
         }));
         setIngredients(formattedIngredients);
       } catch (err) {
@@ -113,6 +151,8 @@ const IngredientManagementPage = () => {
         ) : (
           <IngredientSelection
             ingredients={ingredients}
+            employees={employees}
+            suppliers={suppliers}
             currentReceipt={currentReceipt}
             handleAddToReceipt={handleAddToReceipt}
             handleConfirmReceipt={handleConfirmReceipt}

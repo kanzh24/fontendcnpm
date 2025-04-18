@@ -1,16 +1,13 @@
-import React, { useState } from 'react';
-const Cart = () => {
-  const [cartItems, setCartItems] = useState([
-   
-  ]);
+import React from 'react';
 
+const Cart = ({ cartItems, setCartItems, handleCheckout }) => {
   const fallbackImage = require(`../../assets/images/image01.jpg`);
 
   const handleQuantityChange = (id, delta) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
         item.id === id ? { ...item, quantity: Math.max(0, item.quantity + delta) } : item
-      )
+      ).filter((item) => item.quantity > 0)
     );
   };
 
@@ -40,7 +37,7 @@ const Cart = () => {
           <strong>Tổng cộng:</strong>
           <span>{totalPrice.toLocaleString()} VND</span>
         </div>
-        <button className="checkout-button">Thanh toán</button>
+        <button className="checkout-button" onClick={handleCheckout}>Đặt món</button>
       </div>
     </div>
   );

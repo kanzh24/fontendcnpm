@@ -1,185 +1,193 @@
-/* Order Container */
-.order-container {
-  margin: 20px auto;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* src/components/Management/OrderHistory.css */
+.order-history-container {
   padding: 20px;
-  width: 90%;
   max-width: 1200px;
+  margin: 0 auto;
 }
 
-.order-container h2 {
-  text-align: center;
-  font-size: 28px;
+.order-history-container h2 {
+  font-size: 1.8rem;
+  color: #333;
   margin-bottom: 20px;
-  color: #4A4A4A;
 }
 
-/* Layout 2 cột */
-.order-content {
+.error-message {
+  color: #e53e3e;
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+.order-history-layout {
   display: flex;
   gap: 20px;
 }
 
-/* Danh sách đơn hàng bên trái */
-.order-list {
-  flex: 1;
-  max-height: 500px;
-  overflow-y: auto;
-}
-.order-item {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 5px;
-  margin-bottom: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.order-item.active {
-  background-color: #ffa500; /* Màu cam khi được chọn */
-  color: #fff;
-}
-
-.order-id {
-  font-weight: bold;
-}
-
-.top {
+/* Bộ lọc */
+.filter-section {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 3px;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
-.bot {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-/* Trạng thái đơn hàng */
-.status {
-  font-weight: 500;
-}
-
-.status.paid {
-  color: #4caf50; /* Màu xanh lá cho "Paid" */
-}
-
-.status.unpaid {
-  color: #d32f2f; /* Màu đỏ cho "Unpaid" */
-}
-
-.status.confirmed {
-  color: #4caf50; /* Màu xanh lá cho "Confirmed" */
-}
-
-.status.cancelled {
-  color: #d32f2f; /* Màu đỏ cho "Cancelled" */
-}
-
-/* Chi tiết đơn hàng bên phải */
-.order-details {
-  flex: 1;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
-}
-
-.order-details h3 {
-  font-size: 1.2rem;
-  margin-bottom: 15px;
-}
-
-.order-items {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.order-item-detail {
+.filter-group {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 5px;
 }
 
-.order-item-image {
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
+.filter-group label {
+  font-size: 1rem;
+  color: #333;
+}
+
+.filter-group input[type="text"],
+.filter-group select {
+  padding: 5px;
+  border: 1px solid #e5e7eb;
   border-radius: 5px;
+  font-size: 1rem;
 }
 
-.order-item-details {
+.filter-group input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+/* Danh sách đơn hàng */
+.order-list {
   flex: 1;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
-.order-item-name {
-  display: block;
-  font-weight: 500;
+.order-card {
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.order-item-price {
+.order-card:hover {
+  background-color: #f9fafb;
+}
+
+.order-card.selected {
+  background-color: #fed7aa;
+  border-left: 4px solid #f97316;
+}
+
+.order-card p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.order-card p strong {
+  color: #000;
+}
+
+/* Phân trang */
+.pagination-section {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pagination-info {
+  font-size: 0.9rem;
   color: #666;
 }
 
-.order-item-quantity {
-  font-weight: 500;
-}
-
-/* Tổng tiền */
-.order-total {
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  margin-top: 15px;
-  padding-top: 10px;
-  border-top: 1px solid #ddd;
-}
-
-/* Nút xử lý */
-.order-actions {
+.pagination-controls {
   display: flex;
   gap: 10px;
-  margin-top: 15px;
+  align-items: center;
 }
 
-.confirm-button,
-.cancel-button,
-.paid-button {
-  padding: 8px 15px;
+.pagination-controls button {
+  background-color: #e5e7eb;
+  color: #333;
+  padding: 5px 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s;
 }
 
-.confirm-button {
-  background-color: #4caf50; /* Màu xanh lá cho "Xác nhận" */
-  color: #fff;
+.pagination-controls button:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
 }
 
-.confirm-button:hover {
-  background-color: #388e3c;
+.pagination-controls button:hover:not(:disabled) {
+  background-color: #d1d5db;
+}
+
+.pagination-controls select {
+  padding: 5px;
+  border: 1px solid #e5e7eb;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+/* Chi tiết đơn hàng */
+.order-details-panel {
+  flex: 2;
+  background-color: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.order-details-panel h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.order-details-panel h4 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.order-details p {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.order-details ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.order-details li {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 5px;
 }
 
 .cancel-button {
-  background-color: #ff6f61; /* Màu cam đỏ cho "Hủy" */
+  background-color: #ef5350;
   color: #fff;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  transition: background-color 0.3s;
 }
 
 .cancel-button:hover {
-  background-color: #ff3e2d;
-}
-
-.paid-button {
-  background-color: #ffa500; /* Màu cam cho "Đã thanh toán" */
-  color: #fff;
-}
-
-.paid-button:hover {
-  background-color: #ff6f61;
+  background-color: #dc2626;
 }

@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginPage from './pages/LoginPage';
 import SalesPage from './pages/SalesPage';
 import ManagementPage from './pages/ManagementPage';
+import { useParams } from 'react-router-dom'; // nếu cần xử lý trong component
+
 import { isAuthenticated } from './api/auth';
 import './styles/Header.css';
 import './styles/styles.css';
@@ -13,7 +15,7 @@ import './styles/Cart.css';
 import './styles/SalePage.css';
 import './styles/Productlist.css';
 import './styles/Sidebar.css';
-import './styles/Employee.css';
+import './styles/StaffManagement.css';
 import './styles/SideBarApp.css';
 import './styles/Login.css';
 import './styles/ProductManagement.css';
@@ -43,6 +45,14 @@ const App = () => {
           }
         />
         <Route
+          path="/sales/:tableId"
+          element={
+            <ProtectedRoute>
+              <SalesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/management"
           element={
             <ProtectedRoute>
@@ -51,6 +61,7 @@ const App = () => {
           }
         />
       </Routes>
+
     </Router>
   );
 };

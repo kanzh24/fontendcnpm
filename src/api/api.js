@@ -188,32 +188,32 @@ export const restoreStockImport = async (id) => {
 
 // Stock Import Items (Quản lý chi tiết phiếu nhập kho)
 export const createStockImportItem = async (stockImportItemData) => {
-  const response = await api.post('/api/v1/stock-import-item', stockImportItemData);
+  const response = await api.post('api/v1/stock-import-items', stockImportItemData);
   return response.data;
 };
 
 export const getStockImportItems = async () => {
-  const response = await api.get('/api/v1/stock-import-item');
+  const response = await api.get('api/v1/stock-import-items');
   return response.data;
 };
 
 export const getStockImportItemById = async (id) => {
-  const response = await api.get(`/api/v1/stock-import-item/${id}`);
+  const response = await api.get(`api/v1/stock-import-items/${id}`);
   return response.data;
 };
 
 export const updateStockImportItem = async (id, stockImportItemData) => {
-  const response = await api.put(`/api/v1/stock-import-item/${id}`, stockImportItemData);
+  const response = await api.put(`api/v1/stock-import-items/${id}`, stockImportItemData);
   return response.data;
 };
 
 export const deleteStockImportItem = async (id) => {
-  const response = await api.delete(`/api/v1/stock-import-item/${id}`);
+  const response = await api.delete(`api/v1/stock-import-items/${id}`);
   return response.data;
 };
 
 export const restoreStockImportItem = async (id) => {
-  const response = await api.patch(`/api/v1/stock-import-item/${id}`);
+  const response = await api.patch(`api/v1/stock-import-items/${id}`);
   return response.data;
 };
 
@@ -243,6 +243,11 @@ export const deleteTable = async (id) => {
   return response.data;
 };
 
+export const getTableOrders = async(id)=> {
+  const response = await api.get(`/api/v1/tables/${id}/orders`);
+  return response.data;
+}
+
 // Drinks (Quản lý đồ uống)
 export const createDrink = async (drinkData) => {
   const response = await api.post('/api/v1/drinks', drinkData);
@@ -268,6 +273,15 @@ export const deleteDrink = async (id) => {
   const response = await api.delete(`/api/v1/drinks/${id}`);
   return response.data;
 };
+export const deleted = async (id) => {
+  const response = await api.get(`/api/v1/drinks/only-trashed`);
+  return response.data;
+};
+export const restore = async (id) => {
+  const response = await api.post(`/api/v1/drinks/${id}/restore`);
+  return response.data;
+};
+
 
 // Payments (Quản lý thanh toán)
 export const createPayment = async (paymentData) => {
@@ -321,3 +335,19 @@ export const getAppRoot = async () => {
   const response = await api.get('/api/v1');
   return response.data;
 };  
+
+// Statistics (Thống kê)
+export const getRevenueStatistics = async (params) => {
+  const response = await api.get('/api/v1/statistics/revenue', { params });
+  return response.data;
+};
+
+export const getProductStatistics = async (params) => {
+  const response = await api.get('/api/v1/statistics/products', { params });
+  return response.data;
+};
+
+export const getDashboardStatistics = async () => {
+  const response = await api.get('/api/v1/statistics/dashboard');
+  return response.data;
+};

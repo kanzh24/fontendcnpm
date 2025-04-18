@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getTables, updateTable, createOrder } from '../../api/api';
+import { getTables, updateTable, createOrder, getTableOrders } from '../../api/api';
 import { getToken } from '../../api/auth';
 import TableList from './TableList';
 import TableCart from './TableCart';
-
 
 const TableManagementPage = () => {
   const [selectedTable, setSelectedTable] = useState(null);
@@ -20,31 +19,69 @@ const TableManagementPage = () => {
   }, [navigate]);
 
   useEffect(() => {
-    const fetchTables = async () => {
+    const fetchTablesAndOrders = async () => {
       try {
         const tablesData = await getTables();
         if (!Array.isArray(tablesData)) {
           throw new Error('Invalid data format: Expected an array of tables');
         }
-        // Lọc các phần tử không hợp lệ và định dạng dữ liệu
-        const formattedTables = tablesData
-          .filter((table) => table && typeof table === 'object' && table.id) // Chỉ giữ các table hợp lệ
-          .map((table) => ({
-            id: table.id,
-            name: table.name || `Bàn ${table.id}`,
-            status: table.status || 'Trống',
-            total: table.total || 0,
-            cartItems: (table.cartItems || []).map((item) => ({
-              ...item,
-              delivered: item.delivered || false,
-            })),
-          }));
-        setTables(formattedTables);
+
+        // Fetch latest pending order for each table
+        const formattedTables = await Promise.all(
+          tablesData
+            .filter((table) => table && typeof table === 'object' && table.id)
+            .map(async (table) => {
+              let cartItems = [];
+              let status = 'none'; // Default to pending
+              try {
+                const ordersData = await getTableOrders(table.id);
+                const latestOrder = ordersData.items[0]; // Latest pending order
+                if (latestOrder && latestOrder.status === 'pending') {
+                  console.log(latestOrder)
+                  cartItems = latestOrder.orderItems.map((item) => ({
+                    id: item.drinkId,
+                    name: item.drink.name,
+                    image: item.drink.image_url,
+                    price: parseFloat(item.priceAtOrder),
+                    quantity: parseInt(item.quantity),
+                    delivered: item.delivered || false,
+                  }));
+                }
+              } catch (err) {
+                console.error(`Failed to fetch orders for table ${table.id}:`, err);
+              }
+
+              return {
+                id: table.id,
+                name: table.name || `Bàn ${table.id}`,
+                status: cartItems.length > 0 ? 'pending' : status,
+                total: cartItems.reduce((sum, item) => sum + item.quantity * item.price, 0),
+                cartItems,
+              };
+            })
+        );
+
+        // Natural sort tables by name (e.g., Bàn 1, Bàn 2, ..., Bàn 10, Bàn 11)
+        const sortedTables = formattedTables.sort((a, b) => {
+          // Extract the numerical part from the table name (e.g., "1" from "Bàn 1")
+          const getNumber = (name) => {
+            const match = name.match(/\d+$/); // Match digits at the end of the string
+            return match ? parseInt(match[0], 10) : 0;
+          };
+
+          const numA = getNumber(a.name);
+          const numB = getNumber(b.name);
+
+          // Compare the numerical parts
+          return numA - numB;
+        });
+
+        setTables(sortedTables);
       } catch (err) {
         setError('Failed to load tables: ' + (err.message || 'Unknown error'));
       }
     };
-    fetchTables();
+    fetchTablesAndOrders();
   }, []);
 
   const handleSelectTable = (table) => {
@@ -53,9 +90,11 @@ const TableManagementPage = () => {
 
   const handleTableStatus = async (tableId, newStatus) => {
     try {
-      if (newStatus === 'Đã thanh toán') {
-        const table = tables.find((t) => t.id === tableId);
-        if (table && table.cartItems && table.cartItems.length > 0) {
+      const table = tables.find((t) => t.id === tableId);
+      if (!table) return;
+
+      if (newStatus === 'completed') {
+        if (table.cartItems && table.cartItems.length > 0) {
           const orderData = {
             tableId: table.id,
             items: table.cartItems.map((item) => ({
@@ -64,37 +103,34 @@ const TableManagementPage = () => {
               price: item.price,
             })),
             total: table.total,
-            status: 'Unpaid',
+            status: 'completed',
           };
           await createOrder(orderData);
         }
       }
 
-      const updatedStatus = newStatus === 'Nhận khách mới' ? 'Trống' : newStatus;
-
+      // Update table status and clear cart if completed or canceled
+      const updatedStatus = newStatus;
       await updateTable(tableId, {
         status: updatedStatus,
-        cartItems: newStatus === 'Đã thanh toán' || newStatus === 'Nhận khách mới' ? [] : undefined,
-        total: newStatus === 'Đã thanh toán' || newStatus === 'Nhận khách mới' ? 0 : undefined,
+        cartItems: newStatus === 'completed' || newStatus === 'canceled' ? [] : table.cartItems,
+        total: newStatus === 'completed' || newStatus === 'canceled' ? 0 : table.total,
       });
 
       setTables((prevTables) =>
-        prevTables.map((table) =>
-          table.id === tableId
+        prevTables.map((t) =>
+          t.id === tableId
             ? {
-                ...table,
+                ...t,
                 status: updatedStatus,
-                cartItems:
-                  newStatus === 'Đã thanh toán' || newStatus === 'Nhận khách mới'
-                    ? []
-                    : table.cartItems,
-                total: newStatus === 'Đã thanh toán' || newStatus === 'Nhận khách mới' ? 0 : table.total,
+                cartItems: newStatus === 'completed' || newStatus === 'canceled' ? [] : t.cartItems,
+                total: newStatus === 'completed' || newStatus === 'canceled' ? 0 : t.total,
               }
-            : table
+            : t
         )
       );
 
-      if (newStatus === 'Đã thanh toán' || newStatus === 'Nhận khách mới') {
+      if (newStatus === 'completed' || newStatus === 'canceled') {
         setSelectedTable(null);
       }
     } catch (err) {

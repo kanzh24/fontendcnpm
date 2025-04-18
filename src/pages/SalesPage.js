@@ -1,23 +1,22 @@
+// === SalesPage.js ===
 import React, { useState, useEffect } from 'react';
-import { getDrinks, getTables, createOrder, createPayment } from '../api/api';
+import { useParams } from 'react-router-dom';
+import { getDrinks, createOrder } from '../api/api';
 import Header from '../components/Sales/Header';
-// import SidebarSale from '../components/Sales/SideBarSale';
 import ProductList from '../components/Sales/ProductList';
 import Cart from '../components/Sales/Cart';
 
 const SalesPage = () => {
+  const { tableId } = useParams();
   const [drinks, setDrinks] = useState([]);
-  const [selectedTable, setSelectedTable] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [category, setCategory] = useState('all');
   const [error, setError] = useState('');
 
-  // Lấy danh sách đồ uống và bàn
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const drinksData = await getDrinks(); // Gọi API /api/v1/drinks
-        console.log(drinksData)
+        const drinksData = await getDrinks();
         setDrinks(drinksData);
       } catch (err) {
         setError('Failed to load data: ' + (err.message || 'Server error'));
@@ -26,13 +25,22 @@ const SalesPage = () => {
     fetchData();
   }, []);
 
-  // Lọc đồ uống theo danh mục
+  useEffect(() => {
+    const savedCart = localStorage.getItem(`cart-${tableId}`);
+    if (savedCart) {
+      setCartItems(JSON.parse(savedCart));
+    }
+  }, [tableId]);
+
+  useEffect(() => {
+    localStorage.setItem(`cart-${tableId}`, JSON.stringify(cartItems));
+  }, [cartItems, tableId]);
+
   const filteredDrinks = drinks.filter((drink) => {
     if (category === 'all') return true;
     return drink.category === category;
   });
 
-  // Thêm vào giỏ hàng
   const addToCart = (product) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === product.id);
@@ -45,12 +53,7 @@ const SalesPage = () => {
     });
   };
 
-  // Tạo đơn hàng và thanh toán
   const handleCheckout = async () => {
-    if (!selectedTable) {
-      setError('Please select a table');
-      return;
-    }
     if (cartItems.length === 0) {
       setError('Cart is empty');
       return;
@@ -58,29 +61,18 @@ const SalesPage = () => {
 
     try {
       const orderData = {
-        tableId: selectedTable.id,
-        items: cartItems.map((item) => ({
-          drinkId: item.id,
-          quantity: item.quantity,
-          price: item.price,
+        tableId: tableId,
+        orderItems: cartItems.map((item) => ({
+          drinkId: parseInt(item.id),
+          quantity: parseInt(item.quantity),
         })),
-        total: cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
       };
-      const order = await createOrder(orderData); // Gọi API /api/v1/orders
+      console.log(orderData)
+      await createOrder(orderData);
 
-      const paymentData = {
-        orderId: order.id,
-        amount: order.total,
-      };
-      const payment = await createPayment(paymentData); // Gọi API /api/v1/payments/create-payment
-
-      if (payment.paymentUrl) {
-        window.location.href = payment.paymentUrl;
-      } else {
-        alert('Order created successfully!');
-        setCartItems([]);
-        setSelectedTable(null);
-      }
+      alert('Đặt món thành công!');
+      setCartItems([]);
+      localStorage.removeItem(`cart-${tableId}`);
     } catch (err) {
       setError('Failed to create order: ' + (err.message || 'Server error'));
     }
@@ -88,11 +80,9 @@ const SalesPage = () => {
 
   return (
     <div className="sales-page">
-      {/* <Header /> */}
+      <Header />
       <div className="sales-content">
-        {/* <SidebarSale setCategory={setCategory} /> */}
         <div className="sales-main">
-          {/* <h2>Sales Page</h2> */}
           {error && <p className="error-message">{error}</p>}
           <ProductList products={filteredDrinks} addToCart={addToCart} />
           <Cart cartItems={cartItems} setCartItems={setCartItems} handleCheckout={handleCheckout} />

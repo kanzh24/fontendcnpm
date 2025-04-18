@@ -6,6 +6,7 @@ import StaffManagement from './StaffManagement';
 import ProductManagement from './ProductManagement';
 import TableManagementPage from './TableManagementPage';
 import IngredientManagementPage from './IngredientManagementPage';
+import IngredientManagement from './IngredientManagement';
 
 const SidebarApp = () => {
   const [activeFeature, setActiveFeature] = useState('statistics');
@@ -17,6 +18,7 @@ const SidebarApp = () => {
     { icon: 'fa-box', label: 'Quản lý sản phẩm', feature: 'productManagement' },
     { icon: 'fa-table', label: 'Quản lý bàn', feature: 'tableManagement' },
     { icon: 'fa-warehouse', label: 'Quản lý nhập nguyên liệu', feature: 'ingredientManagement' },
+    { icon: 'fa-lemon', label: 'Quản lý nguyên liệu', feature: 'ingredient' },
   ];
 
   const renderContent = () => {
@@ -33,6 +35,8 @@ const SidebarApp = () => {
         return <TableManagementPage />;
       case 'ingredientManagement':
         return <IngredientManagementPage />;
+      case 'ingredient': // Sửa từ 'Ingredient' thành 'ingredient'
+        return <IngredientManagement />;
       default:
         return <Statistics />;
     }
