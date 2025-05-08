@@ -10,7 +10,7 @@ import IngredientManagementPage from './IngredientManagementPage';
 import IngredientManagement from './IngredientManagement';
 
 const SidebarApp = () => {
-  const [activeFeature, setActiveFeature] = useState('statistics');
+  const [activeFeature, setActiveFeature] = useState('tableManagement');
   const location = useLocation(); // Lấy thông tin location để đọc state
 
   // Kiểm tra state từ location để cập nhật activeFeature
@@ -47,7 +47,7 @@ const SidebarApp = () => {
       case 'ingredient':
         return <IngredientManagement />;
       default:
-        return <Statistics />;
+        return <TableManagementPage />;
     }
   };
 
