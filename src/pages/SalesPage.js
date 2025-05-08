@@ -74,9 +74,9 @@ const SalesPage = () => {
       setCartItems([]);
       localStorage.removeItem(`cart-${tableId}`);
     } catch (err) {
-      setError('Failed to create order: ' + (err.message || 'Server error'));
+      setError('Failed to create order: ' + (err|| 'Server error'));
     }
-  };
+  };  
 
   return (
     <div className="sales-page">

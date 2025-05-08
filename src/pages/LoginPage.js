@@ -30,8 +30,10 @@ const LoginPage = () => {
           setUser(user);
         }
 
+        console.log(user)
+
         // Chuyển hướng đến trang SalesPage
-        navigate('/management');
+        navigate(`/${user.role}`);
       } else {
         setError('Login failed: No access token received');
       }

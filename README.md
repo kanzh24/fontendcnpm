@@ -1,3 +1,11 @@
+
+NCB
+9704198526191432198
+NGUYEN VAN A
+15/7
+123456
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

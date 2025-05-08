@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, InputNumber, Select, message } from 'antd';
-import { getIngredients, createIngredient, updateIngredient, deleteIngredient, restoreIngredient,getSuppliers } from '../../api/api';
+import { getIngredients, createIngredient, updateIngredient, deleteIngredient, restoreIngredient, getSuppliers ,deletedIngredient} from '../../api/api';
 
 const { Option } = Select;
-
-
 
 const IngredientManagement = () => {
   const [ingredients, setIngredients] = useState([]);
@@ -16,7 +14,6 @@ const IngredientManagement = () => {
   const [editingIngredient, setEditingIngredient] = useState(null);
   const [form] = Form.useForm();
 
-  // Lấy danh sách nguyên liệu và nhà cung cấp khi component mount
   useEffect(() => {
     fetchIngredients();
     fetchSuppliers();
@@ -26,8 +23,10 @@ const IngredientManagement = () => {
     setLoading(true);
     try {
       const response = await getIngredients();
-      console.log({response})
       setIngredients(response || []);
+      const deleted = await deletedIngredient();
+
+      setDeletedIngredients(deleted || []);
     } catch (error) {
       message.error('Không thể tải danh sách nguyên liệu');
     } finally {
@@ -44,30 +43,26 @@ const IngredientManagement = () => {
     }
   };
 
-//   // Lấy danh sách nguyên liệu đã xóa
-//   const fetchDeletedIngredients = async () => {
-//     try {
-//       const response = await getDeletedIngredients();
-//       setDeletedIngredients(response || []);
-//       setIsDeletedModalOpen(true);
-//     } catch (error) {
-//       message.error('Không thể tải danh sách nguyên liệu đã xóa');
-//     }
-//   };
+  const fetchDeletedIngredients = async () => {
+    try {
+      const response = await deletedIngredient();
+      setDeletedIngredients(response || []);
+      setIsDeletedModalOpen(true);
+    } catch (error) {
+      message.error('Không thể tải danh sách nguyên liệu đã xóa');
+    }
+  };
 
-  // Khôi phục nguyên liệu
-//   const handleRestore = async (id) => {
-//     try {
-//       await restoreIngredient(id);
-//       message.success('Khôi phục nguyên liệu thành công');
-//       fetchDeletedIngredients(); // Cập nhật danh sách nguyên liệu đã xóa
-//       fetchIngredients(); // Cập nhật danh sách nguyên liệu chính
-//     } catch (error) {
-//       message.error('Không thể khôi phục nguyên liệu');
-//     }
-//   };
+  const handleRestore = async (id) => {
+    try {
+      await restoreIngredient(id);
+      message.success('Khôi phục nguyên liệu thành công');
+      fetchIngredients();
+    } catch (error) {
+      message.error('Không thể khôi phục nguyên liệu');
+    }
+  };
 
-  // Mở modal để thêm hoặc sửa nguyên liệu
   const showModal = (ingredient = null) => {
     setEditingIngredient(ingredient);
     if (ingredient) {
@@ -83,7 +78,6 @@ const IngredientManagement = () => {
     setIsModalOpen(true);
   };
 
-  // Xử lý submit form (thêm hoặc sửa)
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
@@ -109,7 +103,6 @@ const IngredientManagement = () => {
     }
   };
 
-  // Xử lý xóa nguyên liệu
   const handleDelete = async (id) => {
     try {
       await deleteIngredient(id);
@@ -120,7 +113,6 @@ const IngredientManagement = () => {
     }
   };
 
-  // Cột của bảng nguyên liệu chính
   const columns = [
     {
       title: 'Tên nguyên liệu',
@@ -160,7 +152,6 @@ const IngredientManagement = () => {
     },
   ];
 
-  // Cột của bảng nguyên liệu đã xóa
   const deletedColumns = [
     {
       title: 'Tên nguyên liệu',
@@ -187,11 +178,11 @@ const IngredientManagement = () => {
     {
       title: 'Hành động',
       key: 'action',
-    //   render: (_, record) => (
-        // <Button type="primary" onClick={() => handleRestore(record.id)}>
-        //   Khôi phục
-        // </Button>
-    //   ),
+      render: (_, record) => (
+        <Button type="primary" onClick={() => handleRestore(record.id)}>
+          Khôi phục
+        </Button>
+      ),
     },
   ];
 
@@ -202,14 +193,13 @@ const IngredientManagement = () => {
         <Button type="primary" onClick={() => showModal()} style={{ marginRight: 8 }}>
           Thêm nguyên liệu mới
         </Button>
-        {/* <Button type="default" onClick={fetchDeletedIngredients}>
+        <Button type="default" onClick={fetchDeletedIngredients}>
           Xem nguyên liệu đã xóa
-        </Button> */}
+        </Button>
       </div>
 
       <Table columns={columns} dataSource={ingredients} rowKey="id" loading={loading} />
 
-      {/* Modal để thêm/sửa nguyên liệu */}
       <Modal
         title={editingIngredient ? 'Sửa nguyên liệu' : 'Thêm nguyên liệu mới'}
         open={isModalOpen}
@@ -254,7 +244,6 @@ const IngredientManagement = () => {
         </Form>
       </Modal>
 
-      {/* Modal để hiển thị danh sách nguyên liệu đã xóa */}
       <Modal
         title="Danh sách nguyên liệu đã xóa"
         open={isDeletedModalOpen}

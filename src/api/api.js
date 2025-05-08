@@ -99,6 +99,12 @@ export const createIngredient = async (ingredientData) => {
   return response.data;
 };
 
+export const deletedIngredient = async (ingredientData) => {
+  const response = await api.get('/api/v1/ingredients/deleted');
+  return response.data;
+};
+
+
 export const getIngredients = async () => {
   const response = await api.get('/api/v1/ingredients');
   return response.data;
@@ -120,7 +126,7 @@ export const deleteIngredient = async (id) => {
 };
 
 export const restoreIngredient = async (id) => {
-  const response = await api.patch(`/api/v1/ingredients/${id}`);
+  const response = await api.patch(`/api/v1/ingredients/${id}/restore`);
   return response.data;
 };
 

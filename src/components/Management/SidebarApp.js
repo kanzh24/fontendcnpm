@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'; // Thêm useLocation
 import Sidebar from '../Sidebar';
 import Statistics from './Statistics';
 import OrderHistory from './OrderHistory';
@@ -10,6 +11,14 @@ import IngredientManagement from './IngredientManagement';
 
 const SidebarApp = () => {
   const [activeFeature, setActiveFeature] = useState('statistics');
+  const location = useLocation(); // Lấy thông tin location để đọc state
+
+  // Kiểm tra state từ location để cập nhật activeFeature
+  useEffect(() => {
+    if (location.state && location.state.activeFeature) {
+      setActiveFeature(location.state.activeFeature);
+    }
+  }, [location]);
 
   const menuItems = [
     { icon: 'fa-chart-bar', label: 'Thống kê', feature: 'statistics' },
@@ -35,7 +44,7 @@ const SidebarApp = () => {
         return <TableManagementPage />;
       case 'ingredientManagement':
         return <IngredientManagementPage />;
-      case 'ingredient': // Sửa từ 'Ingredient' thành 'ingredient'
+      case 'ingredient':
         return <IngredientManagement />;
       default:
         return <Statistics />;

@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Select, InputNumber } from 'antd';
 
 const { Option } = Select;
+const userId = parseInt(localStorage.getItem('user')?.split(',')[0].split(':')[1].replaceAll('"', '')); // Lấy userId từ localStorage
+console.log('User ID:', userId);
 
 const IngredientSelection = ({
   ingredients,
-  employees,
   suppliers,
   currentReceipt,
   handleAddToReceipt,
@@ -15,7 +16,6 @@ const IngredientSelection = ({
   const [selectedIngredient, setSelectedIngredient] = useState(null);
   const [quantity, setQuantity] = useState(0);
   const [unitPrice, setUnitPrice] = useState(0);
-  const [employeeId, setEmployeeId] = useState(null);
   const [supplierId, setSupplierId] = useState(null);
   const [filteredIngredients, setFilteredIngredients] = useState(ingredients);
 
@@ -44,32 +44,26 @@ const IngredientSelection = ({
     }
   };
 
+  const handleConfirm = () => {
+    if (!userId) {
+      console.error('User ID not found in localStorage');
+      return;
+    }
+    console.log('Supplier ID before confirm:', supplierId); // Kiểm tra supplierId trước khi gửi
+    handleConfirmReceipt(supplierId);
+  };
+
   return (
     <div className="ingredient-selection-container">
       <h3>Tạo phiếu nhập mới</h3>
       <div className="ingredient-selection-content">
         <div className="employee-supplier-selection">
           <div className="select-field">
-            <label>Nhân viên:</label>
-            <Select
-              style={{ width: 200 }}
-              placeholder="Chọn nhân viên"
-              onChange={(value) => setEmployeeId(parseInt(value))} // Chuyển thành int
-              value={employeeId}
-            >
-              {employees.map((employee) => (
-                <Option key={employee.id} value={employee.id}>
-                  {employee.name}
-                </Option>
-              ))}
-            </Select>
-          </div>
-          <div className="select-field">
             <label>Nhà cung cấp:</label>
             <Select
               style={{ width: 200 }}
               placeholder="Chọn nhà cung cấp"
-              onChange={(value) => setSupplierId(parseInt(value))} // Chuyển thành int
+              onChange={(value) => setSupplierId(parseInt(value))}
               value={supplierId}
             >
               {suppliers.map((supplier) => (
@@ -105,15 +99,15 @@ const IngredientSelection = ({
                   value={quantity}
                   onChange={(value) => setQuantity(value)}
                   min={0}
-                  step={0.1} // quantity là float
+                  step={0.1}
                 />
                 <label>Đơn giá (VND):</label>
                 <InputNumber
                   value={unitPrice}
                   onChange={(value) => setUnitPrice(value)}
                   min={0}
-                  step={1} // unitPrice là int
-                  parser={(value) => parseInt(value)} // Đảm bảo giá trị là int
+                  step={1}
+                  parser={(value) => parseInt(value)}
                 />
                 <button onClick={handleAdd}>Thêm vào phiếu</button>
               </div>
@@ -135,8 +129,8 @@ const IngredientSelection = ({
           </div>
           <div className="receipt-actions">
             <button
-              onClick={() => handleConfirmReceipt(employeeId, supplierId)}
-              disabled={currentReceipt.length === 0 || !employeeId || !supplierId}
+              onClick={handleConfirm}
+              disabled={currentReceipt.length === 0 || !supplierId}
             >
               Xác nhận phiếu nhập
             </button>

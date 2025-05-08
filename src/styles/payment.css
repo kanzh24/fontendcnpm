@@ -1,0 +1,55 @@
+/* styles.css */
+.payment-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .success-title {
+    color: #28a745;
+    font-size: 24px;
+  }
+  
+  .error-title {
+    color: #dc3545;
+    font-size: 24px;
+  }
+  
+  .error-message {
+    color: #dc3545;
+    font-weight: bold;
+  }
+  
+  .payment-details {
+    text-align: left;
+    margin: 20px 0;
+  }
+  
+  .payment-details p {
+    margin: 10px 0;
+  }
+  
+  .back-link, .retry-link {
+    display: inline-block;
+    margin: 10px 10px 0;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #fff;
+    background-color: #007bff;
+    border-radius: 5px;
+  }
+  
+  .back-link:hover, .retry-link:hover {
+    background-color: #0056b3;
+  }
+  
+  .retry-link {
+    background-color: #ffc107;
+  }
+  
+  .retry-link:hover {
+    background-color: #e0a800;
+  }

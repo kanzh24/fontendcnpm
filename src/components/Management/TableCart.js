@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { updateTable } from '../../api/api';
+import { updateOrder } from '../../api/api';
+import { Link } from 'react-router-dom';
 
+// Trong một component khác
+<Link to="/payment-success">Test Payment Success</Link>
 const TableCart = ({ table, handleTableStatus }) => {
-  const [cartItems, setCartItems] = useState(
-    (table && table.cartItems && Array.isArray(table.cartItems)
+  const [cartItems, setCartItems] = useState([]);
+  const [allDelivered, setAllDelivered] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isOrderAccepted, setIsOrderAccepted] = useState(false);
+
+  useEffect(() => {
+    const initialItems = Array.isArray(table.cartItems)
       ? table.cartItems.map((item) => ({
           ...item,
-          delivered: item.delivered || false,
+          delivered: localStorage.getItem(`delivered_${table.id}_${item.id}`) === 'true' || false,
         }))
-      : []
-    ).filter(Boolean)
-  );
-  const [allDelivered, setAllDelivered] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(null); // 'complete' or 'cancel'
-  const [successMessage, setSuccessMessage] = useState('');
+      : [];
+    setCartItems(initialItems);
+    setIsOrderAccepted(localStorage.getItem(`orderAccepted_${table.id}`) === 'true');
+  }, [table]);
 
   const totalPrice = cartItems.reduce((total, item) => total + item.quantity * item.price, 0);
   const hasDeliveredItem = cartItems.some((item) => item.delivered);
@@ -23,35 +31,65 @@ const TableCart = ({ table, handleTableStatus }) => {
     setAllDelivered(allItemsDelivered);
   }, [cartItems]);
 
+  const handleAcceptOrder = async () => {
+    try {
+      await updateOrder(table.orderId, { status: 'preparing' });
+      localStorage.setItem(`orderAccepted_${table.id}`, 'true');
+      setIsOrderAccepted(true);
+      setSuccessMessage('Đã nhận đơn hàng và bắt đầu chuẩn bị!');
+      setTimeout(() => {
+        setSuccessMessage('');
+        window.location.reload(); // Reload trang khi nhận đơn
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to accept order:', err);
+      setErrorMessage('Không thể nhận đơn hàng');
+      setTimeout(() => setErrorMessage(''), 3000);
+    }
+  };
+
   const handleDeliveryChange = async (itemId) => {
     const updatedCartItems = cartItems.map((item) =>
       item.id === itemId ? { ...item, delivered: !item.delivered } : item
     );
     setCartItems(updatedCartItems);
 
-    try {
-      await updateTable(table.id, { cartItems: updatedCartItems });
-    } catch (err) {
-      console.error('Failed to update delivered status:', err);
-    }
+    // Save to localStorage only
+    const item = updatedCartItems.find((i) => i.id === itemId);
+    localStorage.setItem(`delivered_${table.id}_${itemId}`, item.delivered.toString());
   };
 
   const handleConfirmAction = async (action) => {
     try {
-      await handleTableStatus(table.id, action);
-      setSuccessMessage(
-        action === 'completed'
-          ? 'Đã hoàn tất thanh toán thành công!'
-          : 'Đã hủy bàn thành công!'
-      );
+      if (action === 'completed') {
+        // Cập nhật trạng thái đơn hàng thành completed
+        await updateOrder(table.orderId, { status: 'completed' });
+        setSuccessMessage('Đã hoàn tất đơn hàng!');
+      } else if (action === 'canceled') {
+        // Cập nhật trạng thái đơn hàng thành canceled
+        await updateOrder(table.orderId, { status: 'canceled' });
+        setSuccessMessage('Đã hủy đơn hàng thành công!');
+      }
+
+      // Xóa trạng thái trong localStorage
+      localStorage.removeItem(`orderAccepted_${table.id}`);
+      cartItems.forEach((item) => localStorage.removeItem(`delivered_${table.id}_${item.id}`));
+
+      // Reload trang sau khi thực hiện hành động
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+
       setShowConfirm(null);
-      setTimeout(() => setSuccessMessage(''), 3000); // Clear message after 3s
+      setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       console.error(`Failed to ${action} table:`, err);
+      setErrorMessage(`Không thể ${action === 'completed' ? 'hoàn tất' : 'hủy'} đơn hàng`);
+      setTimeout(() => setErrorMessage(''), 3000);
     }
   };
 
-  if (!table || !table.id) {
+  if (!table || !table.id || !table.orderId) {
     return null;
   }
 
@@ -59,58 +97,73 @@ const TableCart = ({ table, handleTableStatus }) => {
     <div className="table-cart-container">
       <div className="table-cart">
         <h3 className="table-cart-title">Giỏ hàng - {table.name || 'Không xác định'}</h3>
-        {successMessage && (
-          <p className="success-message">
-            {successMessage}
-          </p>
-        )}
+        {successMessage && <p className="success-message">{successMessage}</p>}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <div className="table-cart-actions">
-          <button
-            onClick={() => setShowConfirm('completed')}
-            disabled={!allDelivered || cartItems.length === 0}
-            className={`${
-              !allDelivered || cartItems.length === 0 ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
-            Hoàn tất
-          </button>
-          <button
-            onClick={() => setShowConfirm('canceled')}
-            disabled={hasDeliveredItem}
-            className={`${
-              hasDeliveredItem ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
-            Hủy bàn
-          </button>
+          {table.status === 'pending' ? (
+            // Trạng thái pending: chỉ có thể hủy đơn
+            <button
+              onClick={() => setShowConfirm('canceled')}
+              disabled={cartItems.length === 0}
+              className={`${cartItems.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              Hủy đơn
+            </button>
+          ) : table.status === 'paid' ? (
+            // Trạng thái paid: có thể nhận đơn hoặc hủy đơn
+            <>
+              <button
+                onClick={handleAcceptOrder}
+                disabled={cartItems.length === 0}
+                className={`${cartItems.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                Nhận đơn
+              </button>
+              <button
+                onClick={() => setShowConfirm('canceled')}
+                disabled={hasDeliveredItem}
+                className={`${hasDeliveredItem ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                Hủy đơn
+              </button>
+            </>
+          ) : table.status === 'preparing' && isOrderAccepted ? (
+            // Trạng thái preparing: chỉ hiển thị nút hoàn tất
+            <button
+              onClick={() => setShowConfirm('completed')}
+              disabled={!allDelivered || cartItems.length === 0}
+              className={`${!allDelivered || cartItems.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              Hoàn tất
+            </button>
+          ) : null}
         </div>
         {allDelivered && cartItems.length > 0 && (
-          <p className="delivery-success-message">
-            Đã giao thành công toàn bộ món!
-          </p>
+          <p className="delivery-success-message">Đã giao thành công toàn bộ món!</p>
         )}
+
         {showConfirm && (
-          <div className="confirmation-dialog">
-            <div>
+          <div className="confirm-overlay">
+            <div className="confirm-modal">
               <p>
-                Bạn có chắc muốn{' '}
-                {showConfirm === 'completed' ? 'hoàn tất thanh toán' : 'hủy bàn'}?
+                Bạn có chắc chắn muốn {showConfirm === 'completed' ? 'hoàn tất' : 'hủy'} đơn hàng của{' '}
+                <strong>{table.name}</strong> không?
               </p>
-              <div className="flex justify-end mt-4">
-                <button
-                  onClick={() => setShowConfirm(null)}
-                >
-                  Hủy
-                </button>
+              <div className="confirm-buttons">
                 <button
                   onClick={() => handleConfirmAction(showConfirm)}
+                  className="confirm-yes"
                 >
-                  Xác nhận
+                  Có
+                </button>
+                <button onClick={() => setShowConfirm(null)} className="confirm-no">
+                  Không
                 </button>
               </div>
             </div>
           </div>
         )}
+
         <ul className="table-cart-items">
           {cartItems.length > 0 ? (
             cartItems.map((item) => (
@@ -120,19 +173,16 @@ const TableCart = ({ table, handleTableStatus }) => {
                   checked={item.delivered}
                   onChange={() => handleDeliveryChange(item.id)}
                   className="delivery-checkbox"
+                  disabled={table.status !== 'preparing' || !isOrderAccepted}
                 />
                 <img
-                  src={item.image || 'https://via.placeholder.com/50'}
+                  src={item.image || '/images/default-drink.jpg'}
                   alt={item.name}
                   className="table-cart-item-image"
-                  onError={(e) => (e.target.src = 'https://via.placeholder.com/50')}
+                  onError={(e) => (e.target.src = '/images/default-drink.jpg')}
                 />
                 <div className="table-cart-item-details">
-                  <span
-                    className={`table-cart-item-name ${
-                      item.delivered ? 'line-through' : ''
-                    }`}
-                  >
+                  <span className={`table-cart-item-name ${item.delivered ? 'line-through' : ''}`}>
                     {item.name}
                   </span>
                   <span className="table-cart-item-price">

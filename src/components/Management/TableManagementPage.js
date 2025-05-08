@@ -25,64 +25,65 @@ const TableManagementPage = () => {
         if (!Array.isArray(tablesData)) {
           throw new Error('Invalid data format: Expected an array of tables');
         }
-
-        // Fetch latest pending order for each table
+        console.log(tablesData)
         const formattedTables = await Promise.all(
           tablesData
             .filter((table) => table && typeof table === 'object' && table.id)
             .map(async (table) => {
               let cartItems = [];
-              let status = 'none'; // Default to pending
+              let status = 'none';
+              let orderId = null;
+  
               try {
                 const ordersData = await getTableOrders(table.id);
-                const latestOrder = ordersData.items[0]; // Latest pending order
-                if (latestOrder && latestOrder.status === 'pending') {
-                  console.log(latestOrder)
+                const latestOrder = ordersData.items[0];
+  
+                if (latestOrder && (latestOrder.status === 'pending'||latestOrder.status === 'paid'||latestOrder.status === 'preparing')) {
+                  orderId = latestOrder.id;
+  
                   cartItems = latestOrder.orderItems.map((item) => ({
                     id: item.drinkId,
-                    name: item.drink.name,
-                    image: item.drink.image_url,
+                    name: item.drink?.name || 'Không tên',
+                    image: item.drink?.image_url || '',
                     price: parseFloat(item.priceAtOrder),
                     quantity: parseInt(item.quantity),
                     delivered: item.delivered || false,
                   }));
+  
+                  status = latestOrder.status;
                 }
               } catch (err) {
                 console.error(`Failed to fetch orders for table ${table.id}:`, err);
               }
-
+  
               return {
                 id: table.id,
                 name: table.name || `Bàn ${table.id}`,
-                status: cartItems.length > 0 ? 'pending' : status,
+                status,
                 total: cartItems.reduce((sum, item) => sum + item.quantity * item.price, 0),
                 cartItems,
+                orderId, // 👈 thêm orderId vào đây
               };
             })
         );
-
-        // Natural sort tables by name (e.g., Bàn 1, Bàn 2, ..., Bàn 10, Bàn 11)
+  
         const sortedTables = formattedTables.sort((a, b) => {
-          // Extract the numerical part from the table name (e.g., "1" from "Bàn 1")
           const getNumber = (name) => {
-            const match = name.match(/\d+$/); // Match digits at the end of the string
+            const match = name.match(/\d+$/);
             return match ? parseInt(match[0], 10) : 0;
           };
-
-          const numA = getNumber(a.name);
-          const numB = getNumber(b.name);
-
-          // Compare the numerical parts
-          return numA - numB;
+          return getNumber(a.name) - getNumber(b.name);
         });
-
+  
         setTables(sortedTables);
       } catch (err) {
         setError('Failed to load tables: ' + (err.message || 'Unknown error'));
       }
     };
+  
     fetchTablesAndOrders();
   }, []);
+  
 
   const handleSelectTable = (table) => {
     setSelectedTable(table);
@@ -105,7 +106,7 @@ const TableManagementPage = () => {
             total: table.total,
             status: 'completed',
           };
-          await createOrder(orderData);
+          // await createOrder(orderData);
         }
       }
 
