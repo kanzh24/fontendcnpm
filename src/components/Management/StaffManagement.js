@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getEmployees, registerEmployee, updateEmployee, deleteEmployee, restoreEmployee } from '../../api/api';
-// import './StaffManagement.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
 
 const StaffManagement = () => {
   const [staffList, setStaffList] = useState([]);
@@ -56,7 +57,7 @@ const StaffManagement = () => {
         setStaffList(activeStaff);
         setDeletedStaffList(deletedStaff);
       } catch (err) {
-        setError('Failed to load employees: ' + (err.message || 'Unknown error'));
+        toast.error('Failed to load employees: ' + (err.message || 'Unknown error'));
       } finally {
         setLoading(false);
       }
@@ -67,7 +68,6 @@ const StaffManagement = () => {
   // Mở form thêm nhân viên
   const openAddForm = () => {
     setFormData({
-      // id: '',
       name: '',
       phone: '',
       email: '',
@@ -117,39 +117,34 @@ const StaffManagement = () => {
         if (password.trim()) {
           updateData.password = password;
         }
-        console.log(updateData)
+        console.log(updateData);
         const updatedEmployee = await updateEmployee(id, updateData);
         const formattedUpdatedEmployee = {
-          id: updatedEmployee.id,
           name: updatedEmployee.name || 'Unknown',
           phone: updatedEmployee.phone || 'N/A',
           email: updatedEmployee.email || 'N/A',
           role: updatedEmployee.role || 'barista',
-          createdAt: updatedEmployee.createdAt || '',
-          updatedAt: updatedEmployee.updatedAt || '',
-          deletedAt: updatedEmployee.deletedAt || null,
         };
         setStaffList((prev) =>
           prev.map((staff) => (staff.id === id ? formattedUpdatedEmployee : staff))
         );
+        toast.success('Cập nhật nhân viên thành công');
       } else {
         // Thêm nhân viên mới
-        console.log(formData)
+        console.log(formData);
         const newEmployee = await registerEmployee(formData);
         const formattedNewEmployee = {
           name: newEmployee.name || 'Unknown',
           phone: newEmployee.phone || 'N/A',
           email: newEmployee.email || 'N/A',
           role: newEmployee.role || 'barista',
-          createdAt: newEmployee.createdAt || '',
-          updatedAt: newEmployee.updatedAt || '',
-          deletedAt: newEmployee.deletedAt || null,
         };
         setStaffList((prev) => [...prev, formattedNewEmployee]);
+        toast.success('Thêm nhân viên thành công');
       }
       closeForm();
     } catch (err) {
-      setError('Failed to save employee: ' + (err.message || 'Unknown error'));
+      toast.error('Failed to save employee: ' + (err.message || 'Unknown error'));
     }
   };
 
@@ -168,8 +163,9 @@ const StaffManagement = () => {
             deletedAt: deletedEmployee.deletedAt || new Date().toISOString(),
           },
         ]);
+        toast.success('Xóa nhân viên thành công');
       } catch (err) {
-        setError('Failed to delete employee: ' + (err.message || 'Unknown error'));
+        toast.error('Failed to delete employee: ' + (err.message || 'Unknown error'));
       }
     }
   };
@@ -190,8 +186,9 @@ const StaffManagement = () => {
             updatedAt: restoredEmployee.updatedAt || new Date().toISOString(),
           },
         ]);
+        toast.success('Khôi phục nhân viên thành công');
       } catch (err) {
-        setError('Failed to restore employee: ' + (err.message || 'Unknown error'));
+        toast.error('Failed to restore employee: ' + (err.message || 'Unknown error'));
       }
     }
   };
@@ -375,6 +372,19 @@ const StaffManagement = () => {
           </div>
         </div>
       )}
+
+      {/* Thêm ToastContainer */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

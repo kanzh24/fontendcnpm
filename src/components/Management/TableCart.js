@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { updateOrder } from '../../api/api';
 import { Link } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
 
-// Trong một component khác
-<Link to="/payment-success">Test Payment Success</Link>
 const TableCart = ({ table, handleTableStatus }) => {
   const [cartItems, setCartItems] = useState([]);
   const [allDelivered, setAllDelivered] = useState(false);
   const [showConfirm, setShowConfirm] = useState(null);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
   const [isOrderAccepted, setIsOrderAccepted] = useState(false);
 
   useEffect(() => {
@@ -36,15 +34,13 @@ const TableCart = ({ table, handleTableStatus }) => {
       await updateOrder(table.orderId, { status: 'preparing' });
       localStorage.setItem(`orderAccepted_${table.id}`, 'true');
       setIsOrderAccepted(true);
-      setSuccessMessage('Đã nhận đơn hàng và bắt đầu chuẩn bị!');
+      toast.success('Đã nhận đơn hàng và bắt đầu chuẩn bị!');
       setTimeout(() => {
-        setSuccessMessage('');
         window.location.reload(); // Reload trang khi nhận đơn
       }, 2000);
     } catch (err) {
       console.error('Failed to accept order:', err);
-      setErrorMessage('Không thể nhận đơn hàng');
-      setTimeout(() => setErrorMessage(''), 3000);
+      toast.error('Không thể nhận đơn hàng');
     }
   };
 
@@ -64,11 +60,11 @@ const TableCart = ({ table, handleTableStatus }) => {
       if (action === 'completed') {
         // Cập nhật trạng thái đơn hàng thành completed
         await updateOrder(table.orderId, { status: 'completed' });
-        setSuccessMessage('Đã hoàn tất đơn hàng!');
+        toast.success('Đã hoàn tất đơn hàng!');
       } else if (action === 'canceled') {
         // Cập nhật trạng thái đơn hàng thành canceled
         await updateOrder(table.orderId, { status: 'canceled' });
-        setSuccessMessage('Đã hủy đơn hàng thành công!');
+        toast.success('Đã hủy đơn hàng thành công!');
       }
 
       // Xóa trạng thái trong localStorage
@@ -81,11 +77,9 @@ const TableCart = ({ table, handleTableStatus }) => {
       }, 2000);
 
       setShowConfirm(null);
-      setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       console.error(`Failed to ${action} table:`, err);
-      setErrorMessage(`Không thể ${action === 'completed' ? 'hoàn tất' : 'hủy'} đơn hàng`);
-      setTimeout(() => setErrorMessage(''), 3000);
+      toast.error(`Không thể ${action === 'completed' ? 'hoàn tất' : 'hủy'} đơn hàng`);
     }
   };
 
@@ -97,8 +91,6 @@ const TableCart = ({ table, handleTableStatus }) => {
     <div className="table-cart-container">
       <div className="table-cart">
         <h3 className="table-cart-title">Giỏ hàng - {table.name || 'Không xác định'}</h3>
-        {successMessage && <p className="success-message">{successMessage}</p>}
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
         <div className="table-cart-actions">
           {table.status === 'pending' ? (
             // Trạng thái pending: chỉ có thể hủy đơn
@@ -203,6 +195,19 @@ const TableCart = ({ table, handleTableStatus }) => {
           <span>{totalPrice.toLocaleString()} VND</span>
         </div>
       </div>
+
+      {/* Thêm ToastContainer */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

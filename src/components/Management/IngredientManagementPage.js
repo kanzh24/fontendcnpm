@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getIngredients, getStockImports, createStockImport, getSuppliers } from '../../api/api';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
 import ReceiptList from './ReceiptList';
 import IngredientSelection from './IngredientSelection';
 
@@ -9,7 +11,6 @@ const IngredientManagementPage = () => {
   const [receipts, setReceipts] = useState([]);
   const [ingredients, setIngredients] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,7 +56,7 @@ const IngredientManagementPage = () => {
         setReceipts(formattedStockImports);
         setSuppliers(formattedSuppliers);
       } catch (err) {
-        setError('Failed to load data: ' + err.message);
+        toast.error('Failed to load data: ' + err.message);
       }
     };
     fetchData();
@@ -126,9 +127,11 @@ const IngredientManagementPage = () => {
           supplier: ingredient.supplier,
         }));
         setIngredients(formattedIngredients);
+
+        toast.success('Tạo phiếu nhập thành công!');
       } catch (err) {
         console.log(err);
-        setError('Failed to create stock import: ' + err.message);
+        toast.error('Failed to create stock import: ' + err.message);
       }
     }
     setIsAddingReceipt(false);
@@ -138,13 +141,13 @@ const IngredientManagementPage = () => {
   const handleCancelReceipt = () => {
     setIsAddingReceipt(false);
     setCurrentReceipt([]);
+    toast.info('Đã hủy phiếu nhập');
   };
 
   return (
     <div className="ingredient-management-page-container">
       <div className="ingredient-management-content">
         <h2>Quản lý nhập nguyên liệu</h2>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
         {!isAddingReceipt ? (
           <>
             <button className="add-receipt-button" onClick={handleAddReceipt}>
@@ -163,6 +166,19 @@ const IngredientManagementPage = () => {
           />
         )}
       </div>
+
+      {/* Thêm ToastContainer */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

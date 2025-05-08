@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, InputNumber, message, Select } from 'antd';
+import { Table, Button, Modal, Form, Input, InputNumber, Select } from 'antd';
+import { toast, ToastContainer } from 'react-toastify'; // Import ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
 import { getDrinks, createDrink, updateDrink, deleteDrink, getIngredients, deleted, restore } from '../../api/api';
 
 const { Option } = Select;
@@ -25,8 +27,9 @@ const ProductManagement = () => {
     try {
       const response = await getDrinks();
       setDrinks(response || []);
+      console.log(response);
     } catch (error) {
-      message.error('Không thể tải danh sách đồ uống');
+      toast.error('Không thể tải danh sách đồ uống');
     } finally {
       setLoading(false);
     }
@@ -37,7 +40,7 @@ const ProductManagement = () => {
       const response = await getIngredients();
       setIngredients(response || []);
     } catch (error) {
-      message.error('Không thể tải danh sách nguyên liệu');
+      toast.error('Không thể tải danh sách nguyên liệu');
     }
   };
 
@@ -48,33 +51,34 @@ const ProductManagement = () => {
       setDeletedDrinks(response || []);
       setIsDeletedModalOpen(true);
     } catch (error) {
-      message.error('Không thể tải danh sách đồ uống đã xóa');
+      toast.error('Không thể tải danh sách đồ uống đã xóa');
     }
   };
 
   // Khôi phục đồ uống
   const handleRestore = async (id) => {
     try {
-      console.log(id)
+      console.log(id);
       await restore(id);
-      message.success('Khôi phục đồ uống thành công');
+      toast.success('Khôi phục đồ uống thành công');
       fetchDeletedDrinks(); // Cập nhật danh sách đồ uống đã xóa
       fetchDrinks(); // Cập nhật danh sách đồ uống chính
     } catch (error) {
-      message.error('Không thể khôi phục đồ uống');
+      toast.error('Không thể khôi phục đồ uống');
     }
   };
 
   // Mở modal để thêm hoặc sửa đồ uống
   const showModal = (drink = null) => {
     setEditingDrink(drink);
+    console.log(drink);
     if (drink) {
       form.setFieldsValue({
         name: drink.name,
         image_url: drink.image_url,
         price: parseFloat(drink.price),
         recipe: drink.recipes?.map((r) => ({
-          id: parseInt(r.ingredientId),
+          id: r.ingredient.id || '', // Ánh xạ ID sang name
           quantity: parseInt(r.quantity),
         })) || [],
       });
@@ -99,21 +103,19 @@ const ProductManagement = () => {
       };
 
       if (editingDrink) {
-        console.log(drinkData)
-
+        console.log(drinkData);
         await updateDrink(editingDrink.id, drinkData);
-        message.success('Cập nhật đồ uống thành công');
+        toast.success('Cập nhật đồ uống thành công');
       } else {
-        console.log(drinkData)
-
+        console.log(drinkData);
         await createDrink(drinkData);
-        message.success('Thêm đồ uống thành công');
+        toast.success('Thêm đồ uống thành công');
       }
       setIsModalOpen(false);
       fetchDrinks();
     } catch (error) {
       console.error('Error:', error);
-      message.error('Có lỗi xảy ra');
+      toast.error('Có lỗi xảy ra');
     }
   };
 
@@ -121,10 +123,10 @@ const ProductManagement = () => {
   const handleDelete = async (id) => {
     try {
       await deleteDrink(id);
-      message.success('Xóa đồ uống thành công');
+      toast.success('Xóa đồ uống thành công');
       fetchDrinks();
     } catch (error) {
-      message.error('Không thể xóa đồ uống');
+      toast.error('Không thể xóa đồ uống');
     }
   };
 
@@ -159,7 +161,7 @@ const ProductManagement = () => {
           const ingredient = r.ingredient;
           return (
             <div key={`${r.ingredientId}-${index}`}>
-              {ingredient?.name || 'N/A'}: {r.quantity} {ingredient?.unit || ''}
+              {r.ingredient?.name || 'N/A'}: {r.quantity} {ingredient?.unit || ''}
             </div>
           );
         }) || 'N/A';
@@ -326,6 +328,19 @@ const ProductManagement = () => {
       >
         <Table columns={deletedColumns} dataSource={deletedDrinks} rowKey="id" />
       </Modal>
+
+      {/* Thêm ToastContainer với cấu hình */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, InputNumber, Select, message } from 'antd';
-import { getIngredients, createIngredient, updateIngredient, deleteIngredient, restoreIngredient, getSuppliers ,deletedIngredient} from '../../api/api';
+import { Table, Button, Modal, Form, Input, InputNumber, Select } from 'antd';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
+import { getIngredients, createIngredient, updateIngredient, deleteIngredient, restoreIngredient, getSuppliers, deletedIngredient } from '../../api/api';
 
 const { Option } = Select;
 
@@ -25,10 +27,9 @@ const IngredientManagement = () => {
       const response = await getIngredients();
       setIngredients(response || []);
       const deleted = await deletedIngredient();
-
       setDeletedIngredients(deleted || []);
     } catch (error) {
-      message.error('Không thể tải danh sách nguyên liệu');
+      toast.error('Không thể tải danh sách nguyên liệu');
     } finally {
       setLoading(false);
     }
@@ -39,7 +40,7 @@ const IngredientManagement = () => {
       const response = await getSuppliers();
       setSuppliers(response || []);
     } catch (error) {
-      message.error('Không thể tải danh sách nhà cung cấp');
+      toast.error('Không thể tải danh sách nhà cung cấp');
     }
   };
 
@@ -49,17 +50,17 @@ const IngredientManagement = () => {
       setDeletedIngredients(response || []);
       setIsDeletedModalOpen(true);
     } catch (error) {
-      message.error('Không thể tải danh sách nguyên liệu đã xóa');
+      toast.error('Không thể tải danh sách nguyên liệu đã xóa');
     }
   };
 
   const handleRestore = async (id) => {
     try {
       await restoreIngredient(id);
-      message.success('Khôi phục nguyên liệu thành công');
+      toast.success('Khôi phục nguyên liệu thành công');
       fetchIngredients();
     } catch (error) {
-      message.error('Không thể khôi phục nguyên liệu');
+      toast.error('Không thể khôi phục nguyên liệu');
     }
   };
 
@@ -90,26 +91,26 @@ const IngredientManagement = () => {
 
       if (editingIngredient) {
         await updateIngredient(editingIngredient.id, ingredientData);
-        message.success('Cập nhật nguyên liệu thành công');
+        toast.success('Cập nhật nguyên liệu thành công');
       } else {
         await createIngredient(ingredientData);
-        message.success('Thêm nguyên liệu thành công');
+        toast.success('Thêm nguyên liệu thành công');
       }
       setIsModalOpen(false);
       fetchIngredients();
     } catch (error) {
       console.error('Error:', error);
-      message.error('Có lỗi xảy ra');
+      toast.error('Có lỗi xảy ra');
     }
   };
 
   const handleDelete = async (id) => {
     try {
       await deleteIngredient(id);
-      message.success('Xóa nguyên liệu thành công');
+      toast.success('Xóa nguyên liệu thành công');
       fetchIngredients();
     } catch (error) {
-      message.error('Không thể xóa nguyên liệu');
+      toast.error('Không thể xóa nguyên liệu');
     }
   };
 
@@ -253,6 +254,19 @@ const IngredientManagement = () => {
       >
         <Table columns={deletedColumns} dataSource={deletedIngredients} rowKey="id" />
       </Modal>
+
+      {/* Thêm ToastContainer */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

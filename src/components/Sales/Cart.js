@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { createOrder, createPayment } from '../../api/api'; // Import các hàm từ file api
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
 
 const Cart = ({ cartItems, setCartItems }) => {
   const fallbackImage = require(`../../assets/images/image01.jpg`);
@@ -24,7 +26,7 @@ const Cart = ({ cartItems, setCartItems }) => {
   const handleCreateOrder = async () => {
     try {
       if (!tableId) {
-        alert('Không tìm thấy thông tin bàn. Vui lòng quét mã QR trước.');
+        toast.error('Không tìm thấy thông tin bàn. Vui lòng quét mã QR trước.');
         return null;
       }
 
@@ -35,12 +37,12 @@ const Cart = ({ cartItems, setCartItems }) => {
           quantity: item.quantity,
         })),
       };
-      console.log(orderData)
+      console.log(orderData);
       const response = await createOrder(orderData); // Sử dụng hàm từ file api
       return response.id; // Trả về orderId từ response
     } catch (error) {
       console.error('Lỗi khi tạo đơn hàng:', error);
-      alert('Đã xảy ra lỗi khi tạo đơn hàng');
+      toast.error('Đã xảy ra lỗi khi tạo đơn hàng');
       return null;
     }
   };
@@ -54,17 +56,17 @@ const Cart = ({ cartItems, setCartItems }) => {
       };
 
       const response = await createPayment(paymentData); // Sử dụng hàm từ file api
-      console.log(paymentData)
+      console.log(paymentData);
       if (response.success) {
-        alert('Thanh toán tiền mặt thành công!');
+        toast.success('Thanh toán tiền mặt thành công!');
         setCartItems([]); // Xóa giỏ hàng sau khi thanh toán thành công
         return response.data.payment;
       } else {
-        alert('Không thể tạo thanh toán');
+        toast.error('Không thể tạo thanh toán');
       }
     } catch (error) {
       console.error('Lỗi khi tạo thanh toán tiền mặt:', error);
-      alert('Đã xảy ra lỗi khi xử lý thanh toán');
+      toast.error('Đã xảy ra lỗi khi xử lý thanh toán');
     }
   };
 
@@ -82,23 +84,23 @@ const Cart = ({ cartItems, setCartItems }) => {
         localStorage.setItem('currentOrderId', orderId); // Lưu orderId để xử lý kết quả
         window.location.href = response.data.paymentUrl; // Chuyển hướng đến VNPay
       } else {
-        alert('Không thể tạo thanh toán');
+        toast.error('Không thể tạo thanh toán');
       }
     } catch (error) {
       console.error('Lỗi khi tạo thanh toán VNPay:', error);
-      alert('Đã xảy ra lỗi khi xử lý thanh toán');
+      toast.error('Đã xảy ra lỗi khi xử lý thanh toán');
     }
   };
 
   // Hàm xử lý khi nhấn nút "Đặt món"
   const handleCheckout = async () => {
     if (!paymentMethod) {
-      alert('Vui lòng chọn phương thức thanh toán!');
+      toast.error('Vui lòng chọn phương thức thanh toán!');
       return;
     }
 
     if (cartItems.length === 0) {
-      alert('Giỏ hàng trống!');
+      toast.error('Giỏ hàng trống!');
       return;
     }
 
@@ -177,6 +179,19 @@ const Cart = ({ cartItems, setCartItems }) => {
           {isProcessing ? 'Đang xử lý...' : 'Đặt món'}
         </button>
       </div>
+
+      {/* Thêm ToastContainer */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };
