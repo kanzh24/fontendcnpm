@@ -100,7 +100,7 @@ const IngredientManagement = () => {
       fetchIngredients();
     } catch (error) {
       console.error('Error:', error);
-      toast.error('Có lỗi xảy ra');
+      toast.error(error.response.data.message);
     }
   };
 

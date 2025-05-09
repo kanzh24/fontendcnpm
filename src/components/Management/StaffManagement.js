@@ -144,7 +144,8 @@ const StaffManagement = () => {
       }
       closeForm();
     } catch (err) {
-      toast.error('Failed to save employee: ' + (err.message || 'Unknown error'));
+      console.log(err)
+      toast.error(err.response.data.message);
     }
   };
 

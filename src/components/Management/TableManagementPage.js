@@ -53,7 +53,7 @@ const TableManagementPage = () => {
                   status = latestOrder.status;
                 }
               } catch (err) {
-                console.error(`Failed to fetch orders for table ${table.id}:`, err);
+                console.error(`Failed to fetch orders for table ${table.id}:`, err.response.data.message);
               }
   
               return {
@@ -77,7 +77,7 @@ const TableManagementPage = () => {
   
         setTables(sortedTables);
       } catch (err) {
-        setError('Failed to load tables: ' + (err.message || 'Unknown error'));
+        setError(err.response.data.message);
       }
     };
   
@@ -135,7 +135,7 @@ const TableManagementPage = () => {
         setSelectedTable(null);
       }
     } catch (err) {
-      setError('Failed to update table status: ' + (err.message || 'Unknown error'));
+      setError(err.response.data.message);
     }
   };
 

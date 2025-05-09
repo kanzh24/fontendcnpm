@@ -114,8 +114,8 @@ const ProductManagement = () => {
       setIsModalOpen(false);
       fetchDrinks();
     } catch (error) {
-      console.error('Error:', error);
-      toast.error('Có lỗi xảy ra');
+      console.error('Error:', error.response.data.message);
+      toast.error(error.response.data.message);
     }
   };
 
