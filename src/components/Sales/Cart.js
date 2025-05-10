@@ -41,8 +41,8 @@ const Cart = ({ cartItems, setCartItems }) => {
       const response = await createOrder(orderData); // Sử dụng hàm từ file api
       return response.id; // Trả về orderId từ response
     } catch (error) {
-      console.error('Lỗi khi tạo đơn hàng:', error);
-      toast.error('Đã xảy ra lỗi khi tạo đơn hàng');
+      console.error('Lỗi khi tạo đơn hàng:', error.response.data.message);
+      toast.error('Đã xảy ra lỗi khi tạo đơn hàng '+error.response.data.message);
       return null;
     }
   };
