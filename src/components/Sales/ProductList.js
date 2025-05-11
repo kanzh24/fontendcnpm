@@ -8,7 +8,7 @@ const ProductList = ({ products, addToCart }) => {
           const isOutOfStock = (product.remaining || product.soldCount || 0) <= 0; // Check if remaining is 0 or less
           return (
             <div key={product.id} className="product-item">
-              <img src={product.image} alt={product.name} />
+              <img src={product.image_url} alt={product.name} />
               <h3>{product.name}</h3>
               <h4 style={{ color: isOutOfStock ? 'red' : 'inherit' }}>
                 Remaining {product.remaining || product.soldCount || 0}
