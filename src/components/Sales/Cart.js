@@ -138,7 +138,7 @@ const handleQuantityChange = (id, delta) => {
         <ul className="cart-items">
           {cartItems.map((item) => (
             <li key={item.id} className="cart-item">
-              <img src={item.image || fallbackImage} alt={item.name} className="cart-item-image" />
+              <img src={item.image_url || fallbackImage} alt={item.name} className="cart-item-image" />
               <div className="cart-item-details">
                 <span className="cart-item-name">{item.name}</span>
                 <span className="cart-item-price">{item.price.toLocaleString()} VND</span>
