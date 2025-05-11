@@ -1,6 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { getTableById } from '../../api/api'; // Import API function
+import { toast, ToastContainer } from 'react-toastify';
 
 const Header = () => {
+  const { tableId } = useParams(); // Lấy tableId từ URL params
+  const [table, setTable] = useState(null); // State to store table data
+
+  // Fetch table data on component mount or when tableId changes
+  useEffect(() => {
+    const fetchTable = async () => {
+      if (tableId) {
+        try {
+          const tableData = await getTableById(tableId); // Call API to get table info
+          console.log(tableData)
+          setTable(tableData); // Update state with fetched data
+        } catch (error) {
+          console.error('Error fetching table:', error);
+          toast.error('Không tìm thấy thông tin bàn. Vui lòng quét mã QR trước.');
+          
+        }
+      }
+    };
+    fetchTable();
+  }, [tableId]);
+
   return (
     <header className="header">
       {/* Logo */}
@@ -9,19 +33,13 @@ const Header = () => {
         <h1>Website Name</h1>
       </div>
 
-      {/* Search Bar */}
-      <div className="header-search">
-        <input type="text" placeholder="Tìm kiếm sản phẩm..." />
-        <button>
-          <i className="fa fa-search"></i>
-        </button>
-      </div>
-
-      {/* User Info Button */}
-      <div className="header-user">
-        <button>
-          <i className="fa fa-user-circle"></i>
-        </button>
+      {/* Table Info */}
+      <div className="header-table">
+        {table ? (
+          <span>{table.name || table.id || 'N/A'}</span> // Adjust based on API response structure
+        ) : (
+          <span>Loading...</span>
+        )}
       </div>
     </header>
   );
