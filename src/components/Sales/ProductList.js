@@ -13,8 +13,7 @@ const ProductList = ({ products, addToCart }) => {
               <h4 style={{ color: isOutOfStock ? 'red' : 'inherit' }}>
                 Remaining {product.remaining || product.soldCount || 0}
               </h4>
-              <p>{product.price.toLocaleString()} VND</p>
-              <button
+              <p>{Number(product.price).toLocaleString('vi-VN')} VND</p>              <button
                 onClick={() => addToCart(product)}
                 disabled={isOutOfStock}
                 style={{

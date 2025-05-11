@@ -1,28 +1,41 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { createOrder, createPayment } from '../../api/api'; // Import các hàm từ file api
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
+import { createOrder, createPayment } from '../../api/api';
+import { toast } from 'react-toastify';
 
 const Cart = ({ cartItems, setCartItems }) => {
   const fallbackImage = require(`../../assets/images/image01.jpg`);
-  const [paymentMethod, setPaymentMethod] = useState(null); // Trạng thái phương thức thanh toán
-  const [isProcessing, setIsProcessing] = useState(false); // Trạng thái xử lý thanh toán
-  const { tableId } = useParams(); // Lấy tableId từ URL params
+  const [paymentMethod, setPaymentMethod] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { tableId } = useParams();
 
-  const handleQuantityChange = (id, delta) => {
+const handleQuantityChange = (id, delta) => {
     setCartItems((prevItems) =>
       prevItems
-        .map((item) =>
-          item.id === id ? { ...item, quantity: Math.max(0, item.quantity + delta) } : item
-        )
+        .map((item) => {
+          if (item.id === id) {
+            const newQuantity = item.quantity + delta;
+            if (delta < 0 && newQuantity >= 0) {
+              return { ...item, quantity: newQuantity };
+            }
+            if (delta > 0 && newQuantity <= (parseInt(item.soldCount) || 0)) {
+              return { ...item, quantity: newQuantity };
+            } else if (delta > 0 && newQuantity > (parseInt(item.soldCount) || 0)) {
+              toast.error(`Số lượng vượt quá tồn kho (${item.soldCount} sản phẩm)`, {
+                toastId: `quantity-exceed-${item.id}`,
+              });
+              return item;
+            }
+            return item;
+          }
+          return item;
+        })
         .filter((item) => item.quantity > 0)
     );
   };
 
   const totalPrice = cartItems.reduce((total, item) => total + item.quantity * item.price, 0);
 
-  // Hàm tạo đơn hàng
   const handleCreateOrder = async () => {
     try {
       if (!tableId) {
@@ -38,16 +51,15 @@ const Cart = ({ cartItems, setCartItems }) => {
         })),
       };
       console.log(orderData);
-      const response = await createOrder(orderData); // Sử dụng hàm từ file api
-      return response.id; // Trả về orderId từ response
+      const response = await createOrder(orderData);
+      return response.id;
     } catch (error) {
-      console.error('Lỗi khi tạo đơn hàng:', error.response.data.message);
-      toast.error('Đã xảy ra lỗi khi tạo đơn hàng '+error.response.data.message);
+      console.error('Lỗi khi tạo đơn hàng:', error.response?.data?.message || error.message);
+      toast.error(`Đã xảy ra lỗi khi tạo đơn hàng: ${error.response?.data?.message || 'Vui lòng thử lại'}`);
       return null;
     }
   };
 
-  // Hàm xử lý thanh toán tiền mặt
   const handleCashPayment = async (orderId) => {
     try {
       const paymentData = {
@@ -55,11 +67,11 @@ const Cart = ({ cartItems, setCartItems }) => {
         method: 'cash',
       };
 
-      const response = await createPayment(paymentData); // Sử dụng hàm từ file api
+      const response = await createPayment(paymentData);
       console.log(paymentData);
       if (response.success) {
         toast.success('Thanh toán tiền mặt thành công!');
-        setCartItems([]); // Xóa giỏ hàng sau khi thanh toán thành công
+        setCartItems([]);
         return response.data.payment;
       } else {
         toast.error('Không thể tạo thanh toán');
@@ -70,7 +82,6 @@ const Cart = ({ cartItems, setCartItems }) => {
     }
   };
 
-  // Hàm xử lý thanh toán VNPay
   const handleVNPayPayment = async (orderId) => {
     try {
       const paymentData = {
@@ -78,11 +89,11 @@ const Cart = ({ cartItems, setCartItems }) => {
         method: 'vnpay',
       };
 
-      const response = await createPayment(paymentData); // Sử dụng hàm từ file api
+      const response = await createPayment(paymentData);
 
       if (response.success) {
-        localStorage.setItem('currentOrderId', orderId); // Lưu orderId để xử lý kết quả
-        window.location.href = response.data.paymentUrl; // Chuyển hướng đến VNPay
+        localStorage.setItem('currentOrderId', orderId);
+        window.location.href = response.data.paymentUrl;
       } else {
         toast.error('Không thể tạo thanh toán');
       }
@@ -92,7 +103,6 @@ const Cart = ({ cartItems, setCartItems }) => {
     }
   };
 
-  // Hàm xử lý khi nhấn nút "Đặt món"
   const handleCheckout = async () => {
     if (!paymentMethod) {
       toast.error('Vui lòng chọn phương thức thanh toán!');
@@ -146,7 +156,6 @@ const Cart = ({ cartItems, setCartItems }) => {
           <span>{totalPrice.toLocaleString()} VND</span>
         </div>
 
-        {/* Chọn phương thức thanh toán */}
         <div className="payment-methods">
           <h4>Chọn phương thức thanh toán:</h4>
           <label>
@@ -179,19 +188,6 @@ const Cart = ({ cartItems, setCartItems }) => {
           {isProcessing ? 'Đang xử lý...' : 'Đặt món'}
         </button>
       </div>
-
-      {/* Thêm ToastContainer */}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
     </div>
   );
 };
