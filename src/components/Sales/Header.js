@@ -29,8 +29,8 @@ const Header = () => {
     <header className="header">
       {/* Logo */}
       <div className="header-logo">
-        <img src="/logo.png" alt="Logo" />
-        <h1>Website Name</h1>
+        {/* <img src="/logo.png" alt="Logo" /> */}
+        <h1>Coffe POS</h1>
       </div>
 
       {/* Table Info */}
