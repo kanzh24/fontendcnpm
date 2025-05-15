@@ -1,16 +1,41 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../api/api';
-import { setToken, setRefreshToken, setUser } from '../api/auth';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../api/api";
+import { setToken, setRefreshToken, setUser } from "../api/auth";
 // import './LoginPage.css';
 
 const LoginPage = () => {
-  const [credentials, setCredentials] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
+    setError("");
+    setEmailError("");
+    setPasswordError("");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const { email, password } = credentials;
+    let isValid = true;
+
+    if (email === "") {
+      setEmailError("Vui lòng nhập Email.");
+      isValid = false;
+    } else if (!emailRegex.test(email)) {
+      setEmailError("Email không hợp lệ.");
+      isValid = false;
+    }
+
+    // Validate password
+    if (!password) {
+      setPasswordError("Vui lòng nhập mật khẩu.");
+      isValid = false;
+    }
+
+    if (!isValid) return;
     try {
       const response = await login(credentials);
 
@@ -30,35 +55,35 @@ const LoginPage = () => {
           setUser(user);
         }
 
-        console.log(user)
+        console.log(user);
 
         // Chuyển hướng đến trang SalesPage
         navigate(`/${user.role}`);
       } else {
-        setError('Login failed: No access token received');
+        setError("Login failed: No access token received");
       }
     } catch (err) {
       // Hiển thị thông báo lỗi chi tiết nếu có
       const errorMessage =
-        err.response?.data?.message || err.message || 'Invalid credentials';
+        err.response?.data?.message || err.message || "Invalid credentials";
       setError(`Login failed: ${errorMessage}`);
     }
   };
 
   // Hàm giải mã JWT token để lấy thông tin người dùng
-  const parseJwt = (token) => {
+  const parseJwt = token => {
     try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
       const jsonPayload = decodeURIComponent(
         atob(base64)
-          .split('')
-          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
+          .split("")
+          .map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
       );
       return JSON.parse(jsonPayload);
     } catch (e) {
-      console.error('Error parsing JWT token:', e);
+      console.error("Error parsing JWT token:", e);
       return null;
     }
   };
@@ -76,25 +101,30 @@ const LoginPage = () => {
         {error && <p className="error-message">{error}</p>}
         <form className="login-form" onSubmit={handleSubmit}>
           <input
-            type="email"
+            type="text"
             className="login-input"
             placeholder="Email"
             value={credentials.email}
-            onChange={(e) =>
+            onChange={e =>
               setCredentials({ ...credentials, email: e.target.value })
             }
-            required
           />
+          {emailError && (
+            <p className="error-message error-input">{emailError}</p>
+          )}
           <input
             type="password"
             className="login-input"
             placeholder="Password"
             value={credentials.password}
-            onChange={(e) =>
+            onChange={e =>
               setCredentials({ ...credentials, password: e.target.value })
             }
-            required
           />
+          {passwordError && (
+            <p className="error-message error-input">{passwordError}</p>
+          )}
+
           <button type="submit" className="login-button">
             Login
           </button>

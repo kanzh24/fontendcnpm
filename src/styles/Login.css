@@ -2,7 +2,7 @@
 .login-container {
   display: flex;
   min-height: 100vh;
-  background-color: #F5F5F5; /* Light gray background similar to the image */
+  background-color: #f5f5f5; /* Light gray background similar to the image */
 }
 
 .login-left {
@@ -10,7 +10,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #D4F4E2; /* Light green background for the left side */
+  background-color: #d4f4e2; /* Light green background for the left side */
   padding: 20px;
 }
 
@@ -35,7 +35,7 @@
   justify-content: center;
   align-items: center;
   padding: 40px;
-  background-color: #FFFFFF; /* White background for the right side */
+  background-color: #ffffff; /* White background for the right side */
 }
 
 .login-welcome {
@@ -45,9 +45,13 @@
 }
 
 .error-message {
-  color: #D32F2F; /* Red for error messages */
+  color: #d32f2f; /* Red for error messages */
   margin-bottom: 20px;
   font-size: 1rem;
+}
+
+.error-input {
+  margin: 0;
 }
 
 .login-form {
@@ -61,21 +65,21 @@
 .login-input {
   padding: 12px;
   font-size: 1rem;
-  border: 1px solid #F5A623; /* Orange border for inputs */
+  border: 1px solid #f5a623; /* Orange border for inputs */
   border-radius: 5px;
   outline: none;
   transition: border-color 0.3s;
 }
 
 .login-input:focus {
-  border-color: #E59400; /* Darker orange on focus */
+  border-color: #e59400; /* Darker orange on focus */
 }
 
 .login-button {
   padding: 12px;
   font-size: 1.1rem;
-  color: #FFFFFF;
-  background-color: #F5A623; /* Orange button */
+  color: #ffffff;
+  background-color: #f5a623; /* Orange button */
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -83,5 +87,5 @@
 }
 
 .login-button:hover {
-  background-color: #E59400; /* Darker orange on hover */
+  background-color: #e59400; /* Darker orange on hover */
 }
