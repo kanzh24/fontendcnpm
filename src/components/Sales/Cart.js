@@ -52,6 +52,8 @@ const handleQuantityChange = (id, delta) => {
       };
       console.log(orderData);
       const response = await createOrder(orderData);
+      console.log(response)
+      
       return response.id;
     } catch (error) {
       console.error('Lỗi khi tạo đơn hàng:', error.response?.data?.message || error.message);
@@ -60,27 +62,7 @@ const handleQuantityChange = (id, delta) => {
     }
   };
 
-  const handleCashPayment = async (orderId) => {
-    try {
-      const paymentData = {
-        orderId,
-        method: 'cash',
-      };
 
-      const response = await createPayment(paymentData);
-      console.log(paymentData);
-      if (response.success) {
-        toast.success('Thanh toán tiền mặt thành công!');
-        setCartItems([]);
-        return response.data.payment;
-      } else {
-        toast.error('Không thể tạo thanh toán');
-      }
-    } catch (error) {
-      console.error('Lỗi khi tạo thanh toán tiền mặt:', error);
-      toast.error('Đã xảy ra lỗi khi xử lý thanh toán');
-    }
-  };
 
   const handleVNPayPayment = async (orderId) => {
     try {
@@ -123,7 +105,8 @@ const handleQuantityChange = (id, delta) => {
     }
 
     if (paymentMethod === 'cash') {
-      await handleCashPayment(orderId);
+      toast.success('Đặt món thành công! Nhân viên sẽ đến bàn để thu tiền và xác nhận hóa đơn.');
+      
     } else if (paymentMethod === 'vnpay') {
       await handleVNPayPayment(orderId);
     }

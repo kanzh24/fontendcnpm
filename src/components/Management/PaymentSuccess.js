@@ -34,6 +34,10 @@ const PaymentSuccess = () => {
           await updateOrder(orderId, { status: 'paid' });
           setOrderDetails((prev) => ({ ...prev, status: 'paid' })); // Cập nhật UI ngay lập tức
         }
+        if (orderData.status !== 'preparing') {
+          await updateOrder(orderId, { status: 'preparing' });
+          setOrderDetails((prev) => ({ ...prev, status: 'preparing' })); // Cập nhật UI ngay lập tức
+        }
 
         // // Chuyển hướng về trang chủ sau 5 giây
         // setTimeout(() => {

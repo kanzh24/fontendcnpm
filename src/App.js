@@ -55,7 +55,7 @@ const App = () => {
           element={
             // <ProtectedRoute>
               <SalesPage />
-            // </ProtectedRoute>
+            // </ProtectedRoute> 
           }
         />
 

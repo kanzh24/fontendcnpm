@@ -40,7 +40,7 @@ const TableManagementPage = () => {
   
                 if (latestOrder && (latestOrder.status === 'pending'||latestOrder.status === 'paid'||latestOrder.status === 'preparing')) {
                   orderId = latestOrder.id;
-  
+                  console.log(latestOrder)
                   cartItems = latestOrder.orderItems.map((item) => ({
                     id: item.drinkId,
                     name: item.drink?.name || 'Không tên',

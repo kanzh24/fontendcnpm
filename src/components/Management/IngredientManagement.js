@@ -27,6 +27,7 @@ const IngredientManagement = () => {
       const response = await getIngredients();
       setIngredients(response || []);
       const deleted = await deletedIngredient();
+      // console.log(deleted)
       setDeletedIngredients(deleted || []);
     } catch (error) {
       toast.error('Không thể tải danh sách nguyên liệu');
@@ -48,6 +49,8 @@ const IngredientManagement = () => {
     try {
       const response = await deletedIngredient();
       setDeletedIngredients(response || []);
+      console.log(response)
+
       setIsDeletedModalOpen(true);
     } catch (error) {
       toast.error('Không thể tải danh sách nguyên liệu đã xóa');
@@ -172,9 +175,9 @@ const IngredientManagement = () => {
     },
     {
       title: 'Nhà cung cấp',
-      dataIndex: 'supplier',
-      key: 'supplier',
-      render: (supplier) => supplier?.name || 'N/A',
+      dataIndex: 'supplierId',
+      key: 'supplierId',
+      render: (supplierId) => `${parseFloat(supplierId).toLocaleString()}`,
     },
     {
       title: 'Hành động',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { updateOrder } from '../../api/api';
+import { updateOrder,createPayment } from '../../api/api';
 import { Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
@@ -29,8 +29,31 @@ const TableCart = ({ table, handleTableStatus }) => {
     setAllDelivered(allItemsDelivered);
   }, [cartItems]);
 
+
+    const handleCashPayment = async (orderId) => {
+      try {
+        const paymentData = {
+          orderId,
+          method: 'cash',
+        };
+  
+        const response = await createPayment(paymentData);
+        console.log(paymentData);
+        if (response.success) {
+          setCartItems([]);
+          return response.data.payment;
+        } else {
+          toast.error('Không thể tạo thanh toán');
+        }
+      } catch (error) {
+        console.error('Lỗi khi tạo thanh toán tiền mặt:', error);
+        toast.error('Đã xảy ra lỗi khi xử lý thanh toán');
+      }
+    };
+
   const handleAcceptOrder = async () => {
     try {
+
       await updateOrder(table.orderId, { status: 'preparing' });
       localStorage.setItem(`orderAccepted_${table.id}`, 'true');
       setIsOrderAccepted(true);
@@ -42,7 +65,24 @@ const TableCart = ({ table, handleTableStatus }) => {
       console.error('Failed to accept order:', err);
       toast.error('Không thể nhận đơn hàng');
     }
+  };  
+  const handleConfirmOrder = async () => {
+    try {
+      await handleCashPayment(table.orderId);
+
+      // await updateOrder(table.orderId, { status: 'paid' });
+      localStorage.setItem(`orderAccepted_${table.id}`, 'true');
+      setIsOrderAccepted(true);
+      toast.success('Đã nhận được tiền mặt bắt đầu chuẩn bị!');
+      setTimeout(() => {
+        window.location.reload(); // Reload trang khi nhận đơn
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to accept order:', err);
+      toast.error('Không thể nhận đơn hàng');
+    }
   };
+
 
   const handleDeliveryChange = async (itemId) => {
     const updatedCartItems = cartItems.map((item) =>
@@ -94,13 +134,22 @@ const TableCart = ({ table, handleTableStatus }) => {
         <div className="table-cart-actions">
           {table.status === 'pending' ? (
             // Trạng thái pending: chỉ có thể hủy đơn
-            <button
-              onClick={() => setShowConfirm('canceled')}
-              disabled={cartItems.length === 0}
-              className={`${cartItems.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              Hủy đơn
-            </button>
+            <>
+              <button
+                onClick={handleConfirmOrder}
+                disabled={cartItems.length === 0}
+                className={`${cartItems.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                Đã thanh toán
+              </button>
+              <button
+                onClick={() => setShowConfirm('canceled')}
+                disabled={hasDeliveredItem}
+                className={`${hasDeliveredItem ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                Hủy đơn
+              </button>
+            </>
           ) : table.status === 'paid' ? (
             // Trạng thái paid: có thể nhận đơn hoặc hủy đơn
             <>
