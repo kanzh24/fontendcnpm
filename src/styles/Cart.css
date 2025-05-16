@@ -133,3 +133,114 @@
 .cart-container .checkout-button:hover {
   background-color: #ea580c; /* Darker orange on hover */
 }
+@media (max-width: 768px) {
+  .cart-container .cart {
+    width: 100%; /* Full-screen width */
+    right: 0;
+    top: 50px; /* Below header */
+    height: calc(100vh - 110px); /* Account for header and bottom nav */
+    border-left: none;
+    padding: 0.8rem;
+    z-index: 15;
+    transition: transform 0.3s ease; /* Smooth slide-in */
+    transform: translateX(100%); /* Hidden by default */
+  }
+
+  .cart-container .cart.open {
+    transform: translateX(0); /* Show when open */
+  }
+
+  .cart-container .cart-title {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .cart-container .cart-items {
+    max-height: 400px; /* Adjust for smaller screen */
+  }
+
+  .cart-container .cart-item {
+    height: 80px;
+    gap: 8px;
+  }
+
+  .cart-container .cart-item-image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .cart-container .cart-item-name {
+    font-size: 0.9rem;
+  }
+
+  .cart-container .cart-item-price {
+    font-size: 0.85rem;
+  }
+
+  .cart-container .cart-item-quantity button {
+    padding: 6px;
+    font-size: 0.85rem;
+  }
+
+  .cart-container .cart-item-quantity span {
+    font-size: 0.9rem;
+  }
+
+  .cart-container .cart-total {
+    font-size: 1.1rem;
+  }
+
+  .cart-container .checkout-button {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+
+  .cart-container .payment-methods {
+    margin: 0.8rem 0;
+  }
+
+  .cart-container .payment-methods h4 {
+    font-size: 1rem;
+  }
+
+  .cart-container .payment-methods label {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-container .cart {
+    padding: 0.5rem;
+    top: 50px;
+    height: calc(100vh - 100px);
+  }
+
+  .cart-container .cart-title {
+    font-size: 1.2rem;
+  }
+
+  .cart-container .cart-items {
+    max-height: 350px;
+  }
+
+  .cart-container .cart-item {
+    height: 70px;
+  }
+
+  .cart-container .cart-item-image {
+    width: 35px;
+    height: 35px;
+  }
+
+  .cart-container .cart-item-name {
+    font-size: 0.85rem;
+  }
+
+  .cart-container .cart-item-price {
+    font-size: 0.8rem;
+  }
+
+  .cart-container .cart-item-quantity button {
+    padding: 5px;
+  }
+}

@@ -53,9 +53,9 @@ const App = () => {
         <Route
           path="/sales/:tableId"
           element={
-            <ProtectedRoute>
+            // <ProtectedRoute>
               <SalesPage />
-            </ProtectedRoute>
+            // </ProtectedRoute>
           }
         />
 

@@ -35,10 +35,10 @@ const PaymentSuccess = () => {
           setOrderDetails((prev) => ({ ...prev, status: 'paid' })); // Cập nhật UI ngay lập tức
         }
 
-        // Chuyển hướng về trang chủ sau 5 giây
-        setTimeout(() => {
-          navigate('/');
-        }, 5000);
+        // // Chuyển hướng về trang chủ sau 5 giây
+        // setTimeout(() => {
+        //   navigate('/');
+        // }, 5000);
       } catch (err) {
         console.error('Lỗi khi lấy thông tin hoặc cập nhật đơn hàng:', err);
         setError('Đã xảy ra lỗi khi xử lý thông tin thanh toán hoặc đơn hàng');
@@ -138,7 +138,7 @@ const PaymentSuccess = () => {
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = styles.listItem.backgroundColor)}
               >
                 <span style={styles.listItemSpan}>
-                  {item.drinkId} - Số lượng: {item.quantity} - Giá: {(item.price || 0).toLocaleString()} VND
+                  {item.drink.name} - Số lượng: {item.quantity} - Giá: {(item.drink.price || 0).toLocaleString()} VND
                 </span>
               </li>
             ))}

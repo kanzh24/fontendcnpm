@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getOrders, getOrderById, updateOrder } from '../../api/api';
+import { getOrders, getOrderById } from '../../api/api';
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
@@ -46,6 +46,7 @@ const OrderHistory = () => {
       if (!response.items || !Array.isArray(response.items)) {
         throw new Error('Invalid data format: Expected an array of orders');
       }
+      console.log(response)
 
       const formattedOrders = response.items.map((order) => ({
         id: order.id || 'N/A',
@@ -100,38 +101,7 @@ const OrderHistory = () => {
     setPagination((prev) => ({ ...prev, limit: newLimit, page: 1 })); // Reset về trang 1 khi thay đổi limit
   };
 
-  // Xử lý thay đổi bộ lọc
-  const handleFilterChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFilters((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
-    setPagination((prev) => ({ ...prev, page: 1 })); // Reset về trang 1 khi thay đổi bộ lọc
-  };
 
-  // Xử lý thay đổi sắp xếp
-  const handleSortChange = (e) => {
-    setSort(e.target.value);
-    setPagination((prev) => ({ ...prev, page: 1 })); // Reset về trang 1 khi thay đổi sắp xếp
-  };
-
-  // Xử lý hủy đơn hàng (nếu cần)
-  const handleCancelOrder = async () => {
-    if (window.confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
-      try {
-        await updateOrder(selectedOrder.id, { status: 'canceled' });
-        setSelectedOrder({ ...selectedOrder, status: 'canceled' });
-        setOrders((prev) =>
-          prev.map((order) =>
-            order.id === selectedOrder.id ? { ...order, status: 'canceled' } : order
-          )
-        );
-      } catch (err) {
-        setError('Failed to cancel order: ' + (err.message || 'Unknown error'));
-      }
-    }
-  };
 
   return (
     <div className="order-history-container">
@@ -215,7 +185,7 @@ const OrderHistory = () => {
                   <ul>
                     {selectedOrder.orderItems.map((item, index) => (
                       <li key={index}>
-                        {item.name || 'N/A'} - Số lượng: {item.quantity || 0} - Giá: {(item.price || 0).toLocaleString()} VND
+                        {item.drink.name || 'N/A'} - Số lượng: {item.quantity || 0} - Giá: {(item.drink.price || 0).toLocaleString()} VND
                       </li>
                     ))}
                   </ul>

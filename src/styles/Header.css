@@ -84,3 +84,48 @@
 .header-user button:hover {
   color: #ffedd5; /* Light orange on hover */
 }
+@media (max-width: 768px) {
+  .header {
+    width: 100%; /* Full width on mobile */
+    padding: 0.3rem 0.5rem; /* Smaller padding */
+    flex-direction: row; /* Keep row layout but adjust spacing */
+    justify-content: space-between;
+    align-items: center;
+    height: 50px; /* Shorter height */
+  }
+
+  .header-logo h1 {
+    font-size: 1.2rem; /* Smaller logo text */
+  }
+
+  .header-logo img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .header-table span {
+    font-size: 0.9rem; /* Smaller table info text */
+  }
+
+  .header-search {
+    display: none; /* Hide search bar on mobile (optional, or make it toggleable) */
+  }
+
+  .header-user button {
+    font-size: 1.2rem; /* Smaller icon */
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0.2rem 0.4rem;
+  }
+
+  .header-logo h1 {
+    font-size: 1rem;
+  }
+
+  .header-table span {
+    font-size: 0.8rem;
+  }
+}
