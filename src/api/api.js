@@ -286,7 +286,11 @@ export const deleted = async (id) => {
 export const restore = async (id) => {
   const response = await api.post(`/api/v1/drinks/${id}/restore`);
   return response.data;
+};export const remaining = async (id) => {
+  const response = await api.get(`/api/v1/drinks/${id}/available-quantity`);
+  return response.data;
 };
+
 
 
 // Payments (Quản lý thanh toán)
