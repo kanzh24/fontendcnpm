@@ -46,7 +46,7 @@ const ProductList = ({ products, addToCart }) => {
               </h4>
               <p>{Number(product.price).toLocaleString('vi-VN')} VND</p>
               <button
-                onClick={() => addToCart(product)}
+                onClick={() => addToCart(product, remainingStock)}
                 disabled={isOutOfStock}
                 style={{
                   opacity: isOutOfStock ? 0.5 : 1,

@@ -9,19 +9,23 @@ const Cart = ({ cartItems, setCartItems }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { tableId } = useParams();
 
-const handleQuantityChange = (id, delta) => {
+  const handleQuantityChange = (id, delta) => {
     setCartItems((prevItems) =>
       prevItems
         .map((item) => {
           if (item.id === id) {
             const newQuantity = item.quantity + delta;
+            const remaining = item.remaining ?? 0; // Use stored remaining
+            console.log(item)
+            // Allow decreasing quantity (including to 0)
             if (delta < 0 && newQuantity >= 0) {
               return { ...item, quantity: newQuantity };
             }
-            if (delta > 0 && newQuantity <= (parseInt(item.soldCount) || 0)) {
+            // Allow increasing quantity if within remaining stock
+            if (delta > 0 && newQuantity <= remaining) {
               return { ...item, quantity: newQuantity };
-            } else if (delta > 0 && newQuantity > (parseInt(item.soldCount) || 0)) {
-              toast.error(`Số lượng vượt quá tồn kho (${item.soldCount} sản phẩm)`, {
+            } else if (delta > 0 && newQuantity > remaining) {
+              toast.error(`Số lượng vượt quá tồn kho (${remaining} sản phẩm)`, {
                 toastId: `quantity-exceed-${item.id}`,
               });
               return item;
@@ -30,7 +34,7 @@ const handleQuantityChange = (id, delta) => {
           }
           return item;
         })
-        .filter((item) => item.quantity > 0)
+        .filter((item) => item.quantity > 0) // Remove items with quantity 0
     );
   };
 
@@ -52,7 +56,7 @@ const handleQuantityChange = (id, delta) => {
       };
       console.log(orderData);
       const response = await createOrder(orderData);
-      console.log(response)
+      console.log(response);
       
       return response.id;
     } catch (error) {
@@ -61,8 +65,6 @@ const handleQuantityChange = (id, delta) => {
       return null;
     }
   };
-
-
 
   const handleVNPayPayment = async (orderId) => {
     try {
@@ -106,7 +108,8 @@ const handleQuantityChange = (id, delta) => {
 
     if (paymentMethod === 'cash') {
       toast.success('Đặt món thành công! Nhân viên sẽ đến bàn để thu tiền và xác nhận hóa đơn.');
-      
+      setCartItems([]); // Clear cart after successful order
+      localStorage.removeItem(`cart-${tableId}`);
     } else if (paymentMethod === 'vnpay') {
       await handleVNPayPayment(orderId);
     }
@@ -147,7 +150,6 @@ const handleQuantityChange = (id, delta) => {
               name="paymentMethod"
               value="cash"
               onChange={() => setPaymentMethod('cash')}
-              checked={paymentMethod === 'cash'}
             />
             Tiền mặt
           </label>
