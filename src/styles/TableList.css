@@ -1,0 +1,84 @@
+/* src/components/Management/TableList.css */
+.table-list-container {
+  padding: 20px;
+}
+
+.table-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.table-item {
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border:#ff9500 solid 2px ;
+
+}
+
+.table-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.table-empty {
+  background-color: #e0f7fa;
+  border: 2px solid #00acc1;
+}
+
+.table-occupied {
+  background-color: #ffebee;
+  border: 2px solid #ef5350;
+}
+
+.table-item h3 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.table-item p {
+  margin: 5px 0;
+  font-size: 1rem;
+  color: #666;
+}
+/* src/components/Management/TableList.css */
+.table-list-container {
+  @apply p-4;
+}
+
+.table-grid {
+  @apply grid grid-cols-4 gap-4;
+}
+
+.table-item {
+  @apply p-4 rounded-lg cursor-pointer transition-colors;
+  border: 2px solid #f97316; /* Default orange border */
+  background-color: #ffffff; /* White background */
+  color: #000000; /* Black text */
+}
+
+.table-item:hover {
+  background-color: #ffedd5; /* Light orange on hover */
+}
+
+.table-item.bg-green-100 {
+  border: 2px solid #10b981; /* Green border for pending */
+  background-color: #d1fae5; /* Green background for pending */
+}
+
+.table-item.bg-green-100:hover {
+  background-color: #a7f3d0; /* Lighter green on hover */
+}
+
+.table-item h3 {
+  @apply font-bold text-lg mb-2;
+  color: #f97316; /* Orange title */
+}
+
+.table-item p {
+  @apply text-sm;
+  color: #000000; /* Black text */
+}

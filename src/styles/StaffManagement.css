@@ -1,0 +1,203 @@
+/* src/components/Management/StaffManagement.css */
+.staff-management-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #ffffff; /* White background */
+}
+
+.staff-management-container h2 {
+  font-size: 1.8rem;
+  color: #000000; /* Black text */
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.staff-management-container h3 {
+  font-size: 1.4rem;
+  color: #000000; /* Black text */
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.error-message {
+  color: #ef4444; /* Red for errors */
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+.staff-management-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-staff-button,
+.toggle-deleted-button {
+  background-color: #f97316; /* Orange button */
+  color: #ffffff; /* White text */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.toggle-deleted-button {
+  background-color: #000000; /* Black button */
+}
+
+.add-staff-button:hover,
+.toggle-deleted-button:hover {
+  background-color: #ea580c; /* Darker orange on hover */
+}
+
+.toggle-deleted-button:hover {
+  background-color: #333333; /* Lighter black on hover */
+}
+
+.staff-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff; /* White background */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.staff-table th,
+.staff-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 2px solid #f97316; /* Orange border */
+  color: #000000; /* Black text */
+}
+
+.staff-table th {
+  background-color: #ffedd5; /* Light orange background */
+  font-weight: bold;
+}
+
+.staff-table td {
+  color: #000000; /* Black text */
+}
+
+.edit-button,
+.delete-button,
+.restore-button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.edit-button {
+  background-color: #f97316; /* Orange button */
+  color: #ffffff; /* White text */
+}
+
+.edit-button:hover {
+  background-color: #ea580c; /* Darker orange on hover */
+}
+
+.delete-button {
+  background-color: #000000; /* Black button */
+  color: #ffffff; /* White text */
+}
+
+.delete-button:hover {
+  background-color: #333333; /* Lighter black on hover */
+}
+
+.restore-button {
+  background-color: #f97316; /* Orange button */
+  color: #ffffff; /* White text */
+}
+
+.restore-button:hover {
+  background-color: #ea580c; /* Darker orange on hover */
+}
+
+.form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.form-container {
+  background-color: #ffffff; /* White background */
+  padding: 20px;
+  border-radius: 8px;
+  width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  border: 2px solid #f97316; /* Orange border */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #000000; /* Black icon */
+}
+
+.form-container h3 {
+  font-size: 1.5rem;
+  color: #000000; /* Black text */
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 1rem;
+  color: #000000; /* Black text */
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 2px solid #f97316; /* Orange border */
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #000000; /* Black text */
+}
+
+.save-staff-button {
+  background-color: #f97316; /* Orange button */
+  color: #ffffff; /* White text */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.save-staff-button:hover {
+  background-color: #ea580c; /* Darker orange on hover */
+}

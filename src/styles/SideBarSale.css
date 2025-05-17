@@ -1,0 +1,78 @@
+.sidebar-sale-container .sidebar-sale {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 100vh;
+    background-color: #f97316; /* Orange background */
+    border-right: 2px solid #000000; /* Black border */
+    overflow: hidden;
+    z-index: 10;
+    transition: width 0.3s ease;
+    color: #ffffff; /* White text */
+  }
+  
+  .sidebar-sale-container .sidebar-sale:hover {
+    width: 200px;
+  }
+  
+  .sidebar-sale-container .sidebar-sale-title {
+    font-size: 1.5rem;
+    padding: 1rem 0.5rem;
+    margin: 0;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    color: #ffffff; /* White text */
+    font-weight: bold;
+  }
+  
+  .sidebar-sale-container .sidebar-sale:hover .sidebar-sale-title {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .sidebar-sale-container .sidebar-sale-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar-sale-container .sidebar-sale-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0.5rem;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .sidebar-sale-container .sidebar-sale-item:hover {
+    background-color: #ea580c; /* Darker orange on hover */
+  }
+  
+  .sidebar-sale-container .sidebar-sale-item i {
+    font-size: 1.5rem;
+    margin-right: 10px;
+    color: #ffffff; /* White icon */
+    transition: color 0.3s ease;
+  }
+  
+  .sidebar-sale-container .sidebar-sale-item:hover i {
+    color: #ffedd5; /* Light orange on hover */
+  }
+  
+  .sidebar-sale-container .sidebar-sale-item span {
+    font-size: 1rem;
+    color: #ffffff; /* White text */
+    margin-left: 10px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .sidebar-sale-container .sidebar-sale:hover .sidebar-sale-item span {
+    opacity: 1;
+    transform: translateX(0);
+  }

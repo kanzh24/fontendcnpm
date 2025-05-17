@@ -1,0 +1,161 @@
+/* Product List */
+.product-list-container {
+    padding: 2rem;
+    position: absolute;
+    left: 75px; /* Adjusted to account for sidebar width (60px + 15px margin) */
+    top: 70px; /* Adjusted to account for header height */
+    width: calc(100% - 395px); /* Adjusted to avoid overlap with sidebar (75px) and cart (320px) */
+  }
+  
+  .product-grid {
+    padding: 0;
+  }
+  
+  /* Bố cục lưới */
+  .product-list-container .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(200px, 250px)); /* Giới hạn chiều rộng tối đa là 250px */
+    gap: 20px;
+    width: 100%;
+    justify-content: center; /* Căn giữa các thẻ nếu số lượng ít */
+  }
+  
+  /* Thẻ sản phẩm */
+  .product-list-container .product-item {
+    border: 2px solid #f97316; /* Orange border */
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 1rem;
+    text-align: center;
+    background-color: #ffffff; /* White background */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    width: 100%; /* Đảm bảo thẻ không vượt quá chiều rộng của cột */
+    max-width: 250px; /* Giới hạn chiều rộng tối đa của thẻ */
+  }
+  
+  /* Hiệu ứng hover */
+  .product-list-container .product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background-color: #ffedd5; /* Light orange on hover */
+  }
+  
+  /* Hình ảnh sản phẩm */
+  .product-list-container .product-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  
+  /* Tên sản phẩm */
+  .product-list-container .product-item h3 {
+    font-size: 1.1rem;
+    margin: 10px 0;
+    color: #000000; /* Black text */
+    font-weight: bold;
+  }
+  
+  /* Giá sản phẩm */
+  .product-list-container .product-item p {
+    color: #f97316; /* Orange text */
+    font-weight: bold;
+    font-size: 1rem;
+    margin: 5px 0;
+  }
+  
+  /* Nút "Thêm vào giỏ hàng" */
+  .product-list-container .product-item button {
+    background-color: #f97316; /* Orange button */
+    color: #ffffff; /* White text */
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 0.9rem;
+    width: 100%;
+    font-weight: bold;
+  }
+  
+  .product-list-container .product-item button:hover {
+    background-color: #ea580c; /* Darker orange on hover */
+  }
+  
+  /* Số lượng còn lại */
+  .product-list-container .product-item h4 {
+    font-size: 0.9rem;
+    margin: 10px 0;
+    color: #000000; /* Black text */
+    font-weight: 500;
+  }
+  @media (max-width: 768px) {
+  .product-list-container {
+    padding: 1rem;
+    left: 0; /* No sidebar offset on mobile */
+    top: 50px; /* Adjusted for shorter header */
+    width: 100%; /* Full width */
+    margin-bottom: 60px; /* Space for bottom nav */
+  }
+
+  .product-list-container .product-grid {
+    grid-template-columns: 1fr; /* Single column */
+    gap: 15px;
+    justify-content: center;
+  }
+
+  .product-list-container .product-item {
+    max-width: 100%; /* Full width of container */
+    padding: 0.8rem;
+    border-radius: 8px;
+  }
+
+  .product-list-container .product-item img {
+    height: 120px; /* Smaller image height */
+  }
+
+  .product-list-container .product-item h3 {
+    font-size: 1rem;
+  }
+
+  .product-list-container .product-item p {
+    font-size: 0.9rem;
+  }
+
+  .product-list-container .product-item h4 {
+    font-size: 0.8rem;
+  }
+
+  .product-list-container .product-item button {
+    padding: 10px; /* Larger tap target */
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-list-container {
+    padding: 0.5rem;
+  }
+
+  .product-list-container .product-grid {
+    gap: 10px;
+  }
+
+  .product-list-container .product-item {
+    padding: 0.5rem;
+  }
+
+  .product-list-container .product-item img {
+    height: 100px;
+  }
+
+  .product-list-container .product-item h3 {
+    font-size: 0.9rem;
+  }
+
+  .product-list-container .product-item button {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+}

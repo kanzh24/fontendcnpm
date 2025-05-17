@@ -1,0 +1,131 @@
+/* Header Container */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f97316; /* Orange background */
+  padding: 0.5rem 1rem; /* Reduced padding to shorten height */
+  color: #ffffff; /* White text */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: fixed; /* Ensure header is fixed at the top */
+  top: 0;
+  left: 0;
+  width: calc(100% - 320px); /* Adjust width to avoid overlap with cart (300px cart width + 20px margin) */
+  z-index: 20; /* Ensure header is above other elements */
+}
+
+/* Logo Section */
+.header-logo {
+  display: flex;
+  align-items: center;
+}
+
+.header-logo img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.header-logo h1 {
+  font-size: 1.5rem;
+  margin: 0;
+  color: #ffffff; /* White text */
+  font-weight: bold;
+}
+
+/* Search Bar */
+.header-search {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  margin: 0 1rem;
+  max-width: 400px; /* Limit search bar width to prevent stretching */
+}
+
+.header-search input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: 2px solid #ffffff; /* White border */
+  border-radius: 20px 0 0 20px;
+  font-size: 1rem;
+  color: #000000; /* Black text */
+  background-color: #ffffff; /* White background */
+}
+
+.header-search button {
+  background-color: #ffffff; /* White background */
+  color: #f97316; /* Orange icon */
+  border: 2px solid #ffffff; /* White border */
+  border-left: none; /* Remove left border to connect with input */
+  padding: 0.5rem 1rem;
+  border-radius: 0 20px 20px 0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.header-search button:hover {
+  background-color: #ffedd5; /* Light orange on hover */
+}
+
+.header-search button i {
+  font-size: 1rem;
+}
+
+/* User Info Button */
+.header-user button {
+  background: none;
+  border: none;
+  color: #ffffff; /* White icon */
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.header-user button:hover {
+  color: #ffedd5; /* Light orange on hover */
+}
+@media (max-width: 768px) {
+  .header {
+    width: 100%; /* Full width on mobile */
+    padding: 0.3rem 0.5rem; /* Smaller padding */
+    flex-direction: row; /* Keep row layout but adjust spacing */
+    justify-content: space-between;
+    align-items: center;
+    height: 50px; /* Shorter height */
+  }
+
+  .header-logo h1 {
+    font-size: 1.2rem; /* Smaller logo text */
+  }
+
+  .header-logo img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .header-table span {
+    font-size: 0.9rem; /* Smaller table info text */
+  }
+
+  .header-search {
+    display: none; /* Hide search bar on mobile (optional, or make it toggleable) */
+  }
+
+  .header-user button {
+    font-size: 1.2rem; /* Smaller icon */
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0.2rem 0.4rem;
+  }
+
+  .header-logo h1 {
+    font-size: 1rem;
+  }
+
+  .header-table span {
+    font-size: 0.8rem;
+  }
+}

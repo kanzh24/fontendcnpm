@@ -1,0 +1,14 @@
+/* SidebarApp Container */
+.sidebar-app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+/* Reset và định dạng cơ bản */
+* {
+    box-sizing: border-box;
+}

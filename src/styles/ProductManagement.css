@@ -1,0 +1,461 @@
+.product-management-container {
+  padding: 20px;
+  background-color: #ffffff; /* White background */
+}
+
+.product-management-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #000000; /* Black text */
+  font-weight: bold;
+}
+
+/* Override Ant Design Table */
+.ant-table {
+  background: #ffffff !important; /* White background */
+  border: 2px solid #f97316 !important; /* Orange border */
+}
+
+.ant-table-thead > tr > th {
+  background: #ffedd5 !important; /* Light orange background */
+  color: #000000 !important; /* Black text */
+  font-weight: bold !important;
+  border-bottom: 2px solid #f97316 !important; /* Orange border */
+}
+
+.ant-table-tbody > tr > td {
+  color: #000000 !important; /* Black text */
+  border-bottom: 2px solid #f97316 !important; /* Orange border */
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: #ffedd5 !important; /* Light orange on hover */
+}
+
+/* Override Ant Design Button */
+.ant-btn-primary {
+  background-color: #f97316 !important; /* Orange button */
+  border-color: #f97316 !important;
+  color: #ffffff !important; /* White text */
+  font-weight: bold;
+}
+
+.ant-btn-primary:hover {
+  background-color: #ea580c !important; /* Darker orange on hover */
+  border-color: #ea580c !important;
+}
+
+.ant-btn-primary.ant-btn-dangerous {
+  background-color: #000000 !important; /* Black button for delete */
+  border-color: #000000 !important;
+}
+
+.ant-btn-primary.ant-btn-dangerous:hover {
+  background-color: #333333 !important; /* Lighter black on hover */
+  border-color: #333333 !important;
+}
+
+.ant-btn-default {
+  background-color: #000000 !important; /* Black button for view deleted */
+  border-color: #000000 !important;
+  color: #ffffff !important;
+  font-weight: bold;
+}
+
+.ant-btn-default:hover {
+  background-color: #333333 !important; /* Lighter black on hover */
+  border-color: #333333 !important;
+}
+
+/* Override Ant Design Modal */
+.ant-modal-content {
+  background-color: #ffffff !important; /* White background */
+  border: 2px solid #f97316 !important; /* Orange border */
+  border-radius: 8px !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+.ant-modal-header {
+  background-color: #ffedd5 !important; /* Light orange background */
+  border-bottom: 2px solid #f97316 !important; /* Orange border */
+}
+
+.ant-modal-title {
+  color: #000000 !important; /* Black text */
+  font-weight: bold !important;
+}
+
+.ant-modal-body {
+  color: #000000 !important; /* Black text */
+}
+
+.ant-modal-footer .ant-btn {
+  background-color: #f97316 !important; /* Orange button */
+  border-color: #f97316 !important;
+  color: #ffffff !important; /* White text */
+  font-weight: bold;
+}
+
+.ant-modal-footer .ant-btn:hover {
+  background-color: #ea580c !important; /* Darker orange on hover */
+  border-color: #ea580c !important;
+}
+
+.ant-modal-footer .ant-btn-default {
+  background-color: #000000 !important; /* Black button for cancel */
+  border-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+.ant-modal-footer .ant-btn-default:hover {
+  background-color: #333333 !important; /* Lighter black on hover */
+  border-color: #333333 !important;
+}
+
+/* Override Ant Design Form */
+.ant-form-item-label > label {
+  color: #000000 !important; /* Black text */
+  font-weight: bold;
+}
+
+.ant-input,
+.ant-input-number,
+.ant-select-selector {
+  border: 2px solid #f97316 !important; /* Orange border */
+  border-radius: 5px !important;
+  color: #000000 !important; /* Black text */
+}
+
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background-color: #f97316 !important; /* Orange background for selected */
+  color: #ffffff !important; /* White text */
+}
+
+.ant-input-number-handler-wrap {
+  border-left: 2px solid #f97316 !important; /* Orange border */
+}
+
+.ant-input-number-handler-up,
+.ant-input-number-handler-down {
+  border-top: 2px solid #f97316 !important; /* Orange border */
+  color: #f97316 !important; /* Orange icons */
+}
+
+.ant-input-number-handler-up:hover,
+.ant-input-number-handler-down:hover {
+  background-color: #ffedd5 !important; /* Light orange on hover */
+}
+
+/* Override Ant Design Button in Form.List */
+.ant-btn-dashed {
+  border: 2px dashed #f97316 !important; /* Orange dashed border */
+  color: #f97316 !important; /* Orange text */
+  background-color: #ffffff !important; /* White background */
+}
+
+.ant-btn-dashed:hover {
+  background-color: #ffedd5 !important; /* Light orange on hover */
+  color: #ea580c !important; /* Darker orange text */
+}
+
+/* Existing Styles (Updated) */
+.product-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.product-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.status.in-stock {
+  color: #10b981; /* Keep green for in-stock */
+}
+
+.status.out-of-stock {
+  color: #ef4444; /* Keep red for out-of-stock */
+}
+
+.form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container {
+  background: #ffffff; /* White background */
+  padding: 20px;
+  border-radius: 8px;
+  width: 600px;
+  max-width: 90%;
+  position: relative;
+  border: 2px solid #f97316; /* Orange border */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #000000; /* Black icon */
+}
+
+.image-upload {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.image-preview {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  border: 2px solid #f97316; /* Orange border */
+}
+
+.upload-label {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #f97316; /* Orange button */
+  color: #ffffff; /* White text */
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.upload-label:hover {
+  background-color: #ea580c; /* Darker orange on hover */
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #000000; /* Black text */
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px;
+  font-size: 14px;
+  border: 2px solid #f97316; /* Orange border */
+  border-radius: 5px;
+  color: #000000; /* Black text */
+}
+
+.add-ingredient-button {
+  padding: 8px 12px;
+  background-color: #f97316; /* Orange button */
+  color: #ffffff; /* White text */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.add-ingredient-button:hover {
+  background-color: #ea580c; /* Darker orange on hover */
+}
+
+.save-product-button {
+  padding: 10px;
+  background-color: #f97316; /* Orange button */
+  color: #ffffff; /* White text */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.save-product-button:hover {
+  background-color: #ea580c; /* Darker orange on hover */
+}
+
+.ingredient-selection-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ingredient-selection-content {
+  display: flex;
+  gap: 20px;
+}
+
+.ingredient-list {
+  flex: 1;
+}
+
+.ingredient-list h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #000000; /* Black text */
+  font-weight: bold;
+}
+
+.ingredient-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.ingredient-item {
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #ffffff; /* White background */
+  border: 2px solid #f97316; /* Orange border */
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.ingredient-item:hover {
+  transform: scale(1.05);
+  background-color: #ffedd5; /* Light orange on hover */
+}
+
+.ingredient-item.selected {
+  background-color: #f97316; /* Orange background for selected */
+  color: #ffffff; /* White text for selected */
+  cursor: not-allowed;
+}
+
+.ingredient-item.selected h5,
+.ingredient-item.selected p {
+  color: #ffffff; /* White text for selected */
+}
+
+.ingredient-item h5 {
+  margin: 0;
+  font-size: 16px;
+  color: #000000; /* Black text */
+  font-weight: bold;
+}
+
+.ingredient-item p {
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  color: #000000; /* Black text */
+}
+
+.ingredient-input {
+  width: 300px;
+  padding: 15px;
+  background-color: #ffffff; /* White background */
+  border: 2px solid #f97316; /* Orange border */
+  border-radius: 8px;
+}
+
+.ingredient-input h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #000000; /* Black text */
+  font-weight: bold;
+}
+
+.input-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.input-form label {
+  font-size: 16px;
+  color: #000000; /* Black text */
+}
+
+.input-form input {
+  padding: 8px;
+  font-size: 16px;
+  border: 2px solid #f97316; /* Orange border */
+  border-radius: 5px;
+  color: #000000; /* Black text */
+}
+
+.input-form button {
+  padding: 8px 12px;
+  background-color: #f97316; /* Orange button */
+  color: #ffffff; /* White text */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.input-form button:hover {
+  background-color: #ea580c; /* Darker orange on hover */
+}
+
+.current-ingredients h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #000000; /* Black text */
+  font-weight: bold;
+}
+
+.current-ingredients ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.current-ingredients li {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #000000; /* Black text */
+}
+
+.ingredient-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.ingredient-actions button {
+  padding: 8px 12px;
+  background-color: #f97316; /* Orange button */
+  color: #ffffff; /* White text */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.ingredient-actions button:hover {
+  background-color: #ea580c; /* Darker orange on hover */
+}
