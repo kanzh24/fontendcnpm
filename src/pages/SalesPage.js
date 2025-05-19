@@ -44,14 +44,14 @@ const SalesPage = () => {
     return drink.category === category;
   });
 
-const addToCart = (product) => {
+const addToCart = (product, remaining) => {
   setCartItems((prevItems) => {
     const existingItem = prevItems.find((item) => item.id === product.id);
 
     if (existingItem) {
       // Kiểm tra nếu số lượng mới vượt quá remaining
-      if (existingItem.quantity + 1 > (product.remaining || 0)) {
-        toast.error(`Số lượng vượt quá tồn kho (${product.remaining} sản phẩm)`, {
+      if (existingItem.quantity + 1 > (remaining || 0)) {
+        toast.error(`Số lượng vượt quá tồn kho (${remaining} sản phẩm)`, {
           toastId: `add-to-cart-exceed-${product.id}`,
         });
         return prevItems; // Không tăng số lượng
@@ -63,7 +63,7 @@ const addToCart = (product) => {
     }
 
     // Thêm sản phẩm mới với quantity = 1 và lưu remaining
-    return [...prevItems, { ...product, quantity: 1, remaining: product.remaining }];
+    return [...prevItems, { ...product, quantity: 1, remaining:remaining }];
   });
 };
 
