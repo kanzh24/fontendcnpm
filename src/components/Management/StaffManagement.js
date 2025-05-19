@@ -432,7 +432,7 @@ const StaffManagement = () => {
                 >
                   <option value="admin">Quản trị viên</option>
                   <option value="barista">Nhân viên pha chế</option>
-                  <option value="waiter">Nhân viên phục vụ</option>
+                  <option value="inventory_manager">Quản lý kho</option>
                 </select>
               </div>
               <button type="submit" className="save-staff-button">
