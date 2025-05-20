@@ -174,9 +174,7 @@ const OrderHistory = () => {
 
                 <p><strong>Nhân viên:</strong> {selectedOrder.employee?.name || 'N/A'}</p>
                 <p><strong>Bàn:</strong> {selectedOrder.table?.name || 'N/A'}</p>
-                <p><strong>Số khách:</strong> N/A</p>
                 <p><strong>Phương thức thanh toán:</strong> {selectedOrder.payment?.method || 'N/A'}</p>
-                <p><strong>Giao dịch ID:</strong> {selectedOrder.payment?.transactionId || 'N/A'}</p>
                 <p><strong>Trạng thái:</strong> {selectedOrder.status || 'N/A'}</p>
                 <p><strong>Ngày tạo:</strong> {new Date(selectedOrder.createdAt).toLocaleString()}</p>
                 <p><strong>Ngày cập nhật:</strong> {new Date(selectedOrder.updatedAt).toLocaleString()}</p>
