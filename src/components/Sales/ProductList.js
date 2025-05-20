@@ -33,6 +33,7 @@ const ProductList = ({ products, addToCart }) => {
   // Hàm mở modal khi nhấp vào sản phẩm
   const handleProductClick = (product) => {
     setSelectedProduct(product);
+    console.log(product)
   };
 
   // Hàm đóng modal
@@ -90,51 +91,67 @@ const ProductList = ({ products, addToCart }) => {
 
       {/* Modal chi tiết sản phẩm */}
       {selectedProduct && (
-        <div className="product-modal-overlay" onClick={closeModal}>
-          <div className="product-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close-button" onClick={closeModal}>
-              ×
-            </button>
-            <img src={selectedProduct.image_url} alt={selectedProduct.name} />
-            <h3>{selectedProduct.name}</h3>
-            <h4>
-              Remaining:{' '}
-              {stockData[selectedProduct.id] ?? selectedProduct.remaining ?? 0}
-            </h4>
-            <p>
-              Price: {Number(selectedProduct.price).toLocaleString('vi-VN')} VND
-            </p>
-            <button
-              onClick={() =>
-                handleAddToCartFromModal(
-                  selectedProduct,
-                  stockData[selectedProduct.id] ?? selectedProduct.remaining
-                )
-              }
-              disabled={isOutOfStock(
-                selectedProduct,
-                stockData[selectedProduct.id] ?? selectedProduct.remaining
-              )}
-              style={{
-                opacity: isOutOfStock(
-                  selectedProduct,
-                  stockData[selectedProduct.id] ?? selectedProduct.remaining
-                )
-                  ? 0.5
-                  : 1,
-                cursor: isOutOfStock(
-                  selectedProduct,
-                  stockData[selectedProduct.id] ?? selectedProduct.remaining
-                )
-                  ? 'not-allowed'
-                  : 'pointer',
-              }}
-            >
-              Thêm vào giỏ hàng
-            </button>
-          </div>
-        </div>
-      )}
+  <div className="product-modal-overlay" onClick={closeModal}>
+    <div className="product-modal" onClick={(e) => e.stopPropagation()}>
+
+      <img src={selectedProduct.image_url} alt={selectedProduct.name} />
+      <h3>{selectedProduct.name}</h3>
+      <h4>
+        Remaining:{' '}
+        {stockData[selectedProduct.id] ?? selectedProduct.remaining ?? 0}
+      </h4>
+      <p>
+        Price: {Number(selectedProduct.price).toLocaleString('vi-VN')} VND
+      </p>
+
+      {/* Thêm danh sách nguyên liệu */}
+      {/* <div className="ingredients-section"> */}
+        {/* <h4>Danh sách nguyên liệu</h4> */}
+        {/* {selectedProduct.recipes && selectedProduct.recipes.length > 0 ? ( */}
+          {/* <ul className="ingredients-list"> */}
+            {/* {selectedProduct.recipes.map((recipe, index) => ( */}
+              {/* <li key={index} className="ingredient-item"> */}
+                {/* <span className="ingredient-name">{recipe.ingredient.name}</span> */}
+{/*  */}
+              {/* </li> */}
+            {/* ))} */}
+          {/* </ul> */}
+        {/* ) : ( */}
+          {/* <p>Không có thông tin nguyên liệu.</p> */}
+        {/* )} */}
+      {/* </div> */}
+
+      <button
+        onClick={() =>
+          handleAddToCartFromModal(
+            selectedProduct,
+            stockData[selectedProduct.id] ?? selectedProduct.remaining
+          )
+        }
+        disabled={isOutOfStock(
+          selectedProduct,
+          stockData[selectedProduct.id] ?? selectedProduct.remaining
+        )}
+        style={{
+          opacity: isOutOfStock(
+            selectedProduct,
+            stockData[selectedProduct.id] ?? selectedProduct.remaining
+          )
+            ? 0.5
+            : 1,
+          cursor: isOutOfStock(
+            selectedProduct,
+            stockData[selectedProduct.id] ?? selectedProduct.remaining
+          )
+            ? 'not-allowed'
+            : 'pointer',
+        }}
+      >
+        Thêm vào giỏ hàng
+      </button>
+    </div>
+  </div>
+)}
     </div>
   );
 };
