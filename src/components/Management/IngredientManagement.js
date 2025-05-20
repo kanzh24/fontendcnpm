@@ -93,13 +93,14 @@ const IngredientManagement = () => {
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
+      console.log(`values: ${values}`);
       const ingredientData = {
         name: values.name,
-        availableCount: parseFloat(values.availableCount),
+        availableCount: parseFloat(values.availableCount) || 0,
         unit: values.unit,
         supplierId: parseInt(values.supplierId),
       };
-
+      console.log(`ingredientData: ${ingredientData}`);
       if (editingIngredient) {
         await updateIngredient(editingIngredient.id, ingredientData);
         toast.success("Cập nhật nguyên liệu thành công");
@@ -111,7 +112,7 @@ const IngredientManagement = () => {
       fetchIngredients();
     } catch (error) {
       console.error("Error:", error);
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message);
     }
   };
 
@@ -246,7 +247,7 @@ const IngredientManagement = () => {
           <Form.Item
             name="availableCount"
             label="Số lượng hiện tại"
-            rules={[{ required: true, message: "Vui lòng nhập số lượng" }]}
+            // rules={[{ required: true, message: "Vui lòng nhập số lượng" }]}
           >
             <InputNumber
               min={0}
