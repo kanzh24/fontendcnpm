@@ -1,8 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, InputNumber, Select } from 'antd';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
-import { getIngredients, createIngredient, updateIngredient, deleteIngredient, restoreIngredient, getSuppliers, deletedIngredient } from '../../api/api';
+import React, { useState, useEffect } from "react";
+import { Table, Button, Modal, Form, Input, InputNumber, Select } from "antd";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import CSS của react-toastify
+import {
+  getIngredients,
+  createIngredient,
+  updateIngredient,
+  deleteIngredient,
+  restoreIngredient,
+  getSuppliers,
+  deletedIngredient,
+} from "../../api/api";
 
 const { Option } = Select;
 
@@ -30,7 +38,7 @@ const IngredientManagement = () => {
       // console.log(deleted)
       setDeletedIngredients(deleted || []);
     } catch (error) {
-      toast.error('Không thể tải danh sách nguyên liệu');
+      toast.error("Không thể tải danh sách nguyên liệu");
     } finally {
       setLoading(false);
     }
@@ -41,7 +49,7 @@ const IngredientManagement = () => {
       const response = await getSuppliers();
       setSuppliers(response || []);
     } catch (error) {
-      toast.error('Không thể tải danh sách nhà cung cấp');
+      toast.error("Không thể tải danh sách nhà cung cấp");
     }
   };
 
@@ -49,21 +57,21 @@ const IngredientManagement = () => {
     try {
       const response = await deletedIngredient();
       setDeletedIngredients(response || []);
-      console.log(response)
+      console.log(response);
 
       setIsDeletedModalOpen(true);
     } catch (error) {
-      toast.error('Không thể tải danh sách nguyên liệu đã xóa');
+      toast.error("Không thể tải danh sách nguyên liệu đã xóa");
     }
   };
 
-  const handleRestore = async (id) => {
+  const handleRestore = async id => {
     try {
       await restoreIngredient(id);
-      toast.success('Khôi phục nguyên liệu thành công');
+      toast.success("Khôi phục nguyên liệu thành công");
       fetchIngredients();
     } catch (error) {
-      toast.error('Không thể khôi phục nguyên liệu');
+      toast.error("Không thể khôi phục nguyên liệu");
     }
   };
 
@@ -94,58 +102,63 @@ const IngredientManagement = () => {
 
       if (editingIngredient) {
         await updateIngredient(editingIngredient.id, ingredientData);
-        toast.success('Cập nhật nguyên liệu thành công');
+        toast.success("Cập nhật nguyên liệu thành công");
       } else {
         await createIngredient(ingredientData);
-        toast.success('Thêm nguyên liệu thành công');
+        toast.success("Thêm nguyên liệu thành công");
       }
       setIsModalOpen(false);
       fetchIngredients();
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       toast.error(error.response.data.message);
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async id => {
     try {
       await deleteIngredient(id);
-      toast.success('Xóa nguyên liệu thành công');
+      toast.success("Xóa nguyên liệu thành công");
       fetchIngredients();
     } catch (error) {
-      toast.error('Không thể xóa nguyên liệu');
+      toast.error("Không thể xóa nguyên liệu");
     }
   };
 
   const columns = [
     {
-      title: 'Tên nguyên liệu',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Tên nguyên liệu",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: 'ID nguyên liệu',
-      dataIndex: 'id',
-      key: 'id',
+      title: "ID nguyên liệu",
+      dataIndex: "id",
+      key: "id",
     },
     {
-      title: 'Số lượng hiện tại',
-      dataIndex: 'availableCount',
-      key: 'availableCount',
-      render: (availableCount, record) => `${parseFloat(availableCount).toLocaleString()} ${record.unit}`,
+      title: "Số lượng hiện tại",
+      dataIndex: "availableCount",
+      key: "availableCount",
+      render: (availableCount, record) =>
+        `${parseFloat(availableCount).toLocaleString()} ${record.unit}`,
     },
     {
-      title: 'Nhà cung cấp',
-      dataIndex: 'supplier',
-      key: 'supplier',
-      render: (supplier) => supplier?.name || 'N/A',
+      title: "Nhà cung cấp",
+      dataIndex: "supplier",
+      key: "supplier",
+      render: supplier => supplier?.name || "N/A",
     },
     {
-      title: 'Hành động',
-      key: 'action',
+      title: "Hành động",
+      key: "action",
       render: (_, record) => (
         <div>
-          <Button type="primary" onClick={() => showModal(record)} style={{ marginRight: 8 }}>
+          <Button
+            type="primary"
+            onClick={() => showModal(record)}
+            style={{ marginRight: 8 }}
+          >
             Sửa
           </Button>
           <Button type="primary" danger onClick={() => handleDelete(record.id)}>
@@ -158,30 +171,31 @@ const IngredientManagement = () => {
 
   const deletedColumns = [
     {
-      title: 'Tên nguyên liệu',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Tên nguyên liệu",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: 'ID nguyên liệu',
-      dataIndex: 'id',
-      key: 'id',
+      title: "ID nguyên liệu",
+      dataIndex: "id",
+      key: "id",
     },
     {
-      title: 'Số lượng hiện tại',
-      dataIndex: 'availableCount',
-      key: 'availableCount',
-      render: (availableCount, record) => `${parseFloat(availableCount).toLocaleString()} ${record.unit}`,
+      title: "Số lượng hiện tại",
+      dataIndex: "availableCount",
+      key: "availableCount",
+      render: (availableCount, record) =>
+        `${parseFloat(availableCount).toLocaleString()} ${record.unit}`,
     },
     {
-      title: 'Nhà cung cấp',
-      dataIndex: 'supplierId',
-      key: 'supplierId',
-      render: (supplierId) => `${parseFloat(supplierId).toLocaleString()}`,
+      title: "Nhà cung cấp",
+      dataIndex: "supplierId",
+      key: "supplierId",
+      render: supplierId => `${parseFloat(supplierId).toLocaleString()}`,
     },
     {
-      title: 'Hành động',
-      key: 'action',
+      title: "Hành động",
+      key: "action",
       render: (_, record) => (
         <Button type="primary" onClick={() => handleRestore(record.id)}>
           Khôi phục
@@ -194,7 +208,11 @@ const IngredientManagement = () => {
     <div>
       <h2>Quản lý nguyên liệu</h2>
       <div style={{ marginBottom: 16 }}>
-        <Button type="primary" onClick={() => showModal()} style={{ marginRight: 8 }}>
+        <Button
+          type="primary"
+          onClick={() => showModal()}
+          style={{ marginRight: 8 }}
+        >
           Thêm nguyên liệu mới
         </Button>
         <Button type="default" onClick={fetchDeletedIngredients}>
@@ -202,10 +220,15 @@ const IngredientManagement = () => {
         </Button>
       </div>
 
-      <Table columns={columns} dataSource={ingredients} rowKey="id" loading={loading} />
+      <Table
+        columns={columns}
+        dataSource={ingredients}
+        rowKey="id"
+        loading={loading}
+      />
 
       <Modal
-        title={editingIngredient ? 'Sửa nguyên liệu' : 'Thêm nguyên liệu mới'}
+        title={editingIngredient ? "Sửa nguyên liệu" : "Thêm nguyên liệu mới"}
         open={isModalOpen}
         onOk={handleOk}
         onCancel={() => setIsModalOpen(false)}
@@ -214,31 +237,33 @@ const IngredientManagement = () => {
           <Form.Item
             name="name"
             label="Tên nguyên liệu"
-            rules={[{ required: true, message: 'Vui lòng nhập tên nguyên liệu' }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập tên nguyên liệu" },
+            ]}
           >
             <Input />
           </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             name="availableCount"
             label="Số lượng hiện tại"
-            rules={[{ required: true, message: 'Vui lòng nhập số lượng' }]}
+            rules={[{ required: true, message: "Vui lòng nhập số lượng" }]}
           >
-            <InputNumber min={0} step={0.1} style={{ width: '100%' }} />
-          </Form.Item>
+            <InputNumber min={0} step={0.1} style={{ width: "100%" }} />
+          </Form.Item> */}
           <Form.Item
             name="unit"
             label="Đơn vị"
-            rules={[{ required: true, message: 'Vui lòng nhập đơn vị' }]}
+            rules={[{ required: true, message: "Vui lòng nhập đơn vị" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="supplierId"
             label="Nhà cung cấp"
-            rules={[{ required: true, message: 'Vui lòng chọn nhà cung cấp' }]}
+            rules={[{ required: true, message: "Vui lòng chọn nhà cung cấp" }]}
           >
             <Select placeholder="Chọn nhà cung cấp">
-              {suppliers.map((supplier) => (
+              {suppliers.map(supplier => (
                 <Option key={supplier.id} value={supplier.id}>
                   {supplier.name}
                 </Option>
@@ -255,7 +280,11 @@ const IngredientManagement = () => {
         footer={null}
         width={800}
       >
-        <Table columns={deletedColumns} dataSource={deletedIngredients} rowKey="id" />
+        <Table
+          columns={deletedColumns}
+          dataSource={deletedIngredients}
+          rowKey="id"
+        />
       </Modal>
 
       {/* Thêm ToastContainer */}
