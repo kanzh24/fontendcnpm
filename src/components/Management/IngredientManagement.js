@@ -243,13 +243,18 @@ const IngredientManagement = () => {
           >
             <Input />
           </Form.Item>
-          {/* <Form.Item
+          <Form.Item
             name="availableCount"
             label="Số lượng hiện tại"
             rules={[{ required: true, message: "Vui lòng nhập số lượng" }]}
           >
-            <InputNumber min={0} step={0.1} style={{ width: "100%" }} />
-          </Form.Item> */}
+            <InputNumber
+              min={0}
+              step={0.1}
+              style={{ width: "100%" }}
+              disabled={true}
+            />
+          </Form.Item>
           <Form.Item
             name="unit"
             label="Đơn vị"
