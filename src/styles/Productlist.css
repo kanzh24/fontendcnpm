@@ -105,7 +105,7 @@
   }
 
   .product-list-container .product-grid {
-    grid-template-columns: 1fr; /* Single column */
+    grid-template-columns: repeat(2, minmax(150px, 250px)); /* 2 cột trên mobile */
     gap: 15px;
     justify-content: center;
   }
@@ -136,6 +136,33 @@
     padding: 10px; /* Larger tap target */
     font-size: 0.95rem;
   }
+
+  .product-modal {
+    padding: 1.5rem;
+    max-width: 80%;
+    height: 600px;
+  }
+
+  .product-modal img {
+    height: 380px;
+  }
+
+  .product-modal h3 {
+    font-size: 1.2rem;
+  }
+
+  .product-modal h4 {
+    font-size: 0.9rem;
+  }
+
+  .product-modal p {
+    font-size: 1rem;
+  }
+
+  .product-modal button {
+    padding: 8px 15px;
+    font-size: 0.95rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -144,6 +171,7 @@
   }
 
   .product-list-container .product-grid {
+    grid-template-columns: repeat(2, minmax(120px, 250px)); /* 2 cột trên mobile nhỏ */
     gap: 10px;
   }
 
