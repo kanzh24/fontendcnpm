@@ -1,20 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getTables, updateTable, createOrder, getTableOrders } from '../../api/api';
-import { getToken } from '../../api/auth';
-import TableList from './TableList';
-import TableCart from './TableCart';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  getTables,
+  updateTable,
+  createOrder,
+  getTableOrders,
+} from "../../api/api";
+import { getToken } from "../../api/auth";
+import TableList from "./TableList";
+import TableCart from "./TableCart";
 
 const TableManagementPage = () => {
   const [selectedTable, setSelectedTable] = useState(null);
   const [tables, setTables] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = getToken();
     if (!token) {
-      navigate('/login');
+      navigate("/login");
     }
   }, [navigate]);
 
@@ -23,88 +28,98 @@ const TableManagementPage = () => {
       try {
         const tablesData = await getTables();
         if (!Array.isArray(tablesData)) {
-          throw new Error('Invalid data format: Expected an array of tables');
+          throw new Error("Invalid data format: Expected an array of tables");
         }
-        console.log(tablesData)
+        console.log(tablesData);
         const formattedTables = await Promise.all(
           tablesData
-            .filter((table) => table && typeof table === 'object' && table.id)
-            .map(async (table) => {
+            .filter(table => table && typeof table === "object" && table.id)
+            .map(async table => {
               let cartItems = [];
-              let status = 'none';
+              let status = "none";
               let orderId = null;
-  
+
               try {
                 const ordersData = await getTableOrders(table.id);
                 const latestOrder = ordersData.items[0];
-  
-                if (latestOrder && (latestOrder.status === 'pending'||latestOrder.status === 'paid'||latestOrder.status === 'preparing')) {
+
+                if (
+                  latestOrder &&
+                  (latestOrder.status === "pending" ||
+                    latestOrder.status === "paid" ||
+                    latestOrder.status === "preparing")
+                ) {
                   orderId = latestOrder.id;
-                  console.log(latestOrder)
-                  cartItems = latestOrder.orderItems.map((item) => ({
+                  console.log(latestOrder);
+                  cartItems = latestOrder.orderItems.map(item => ({
                     id: item.drinkId,
-                    name: item.drink?.name || 'Không tên',
-                    image: item.drink?.image_url || '',
+                    name: item.drink?.name || "Không tên",
+                    image: item.drink?.image_url || "",
                     price: parseFloat(item.priceAtOrder),
                     quantity: parseInt(item.quantity),
                     delivered: item.delivered || false,
                   }));
-  
+
                   status = latestOrder.status;
                 }
               } catch (err) {
-                console.error(`Failed to fetch orders for table ${table.id}:`, err.response.data.message);
+                console.error(
+                  `Failed to fetch orders for table ${table.id}:`,
+                  err.response.data.message
+                );
               }
-  
+
               return {
                 id: table.id,
                 name: table.name || `Bàn ${table.id}`,
                 status,
-                total: cartItems.reduce((sum, item) => sum + item.quantity * item.price, 0),
+                total: cartItems.reduce(
+                  (sum, item) => sum + item.quantity * item.price,
+                  0
+                ),
                 cartItems,
                 orderId, // 👈 thêm orderId vào đây
               };
             })
         );
-  
+
         const sortedTables = formattedTables.sort((a, b) => {
-          const getNumber = (name) => {
+          const getNumber = name => {
             const match = name.match(/\d+$/);
             return match ? parseInt(match[0], 10) : 0;
           };
           return getNumber(a.name) - getNumber(b.name);
         });
-  
+
         setTables(sortedTables);
       } catch (err) {
         setError(err.response.data.message);
       }
     };
-  
+
     fetchTablesAndOrders();
   }, []);
-  
 
-  const handleSelectTable = (table) => {
+  const handleSelectTable = table => {
     setSelectedTable(table);
   };
 
   const handleTableStatus = async (tableId, newStatus) => {
     try {
-      const table = tables.find((t) => t.id === tableId);
+      const table = tables.find(t => t.id === tableId);
       if (!table) return;
 
-      if (newStatus === 'completed') {
+      if (newStatus === "completed") {
         if (table.cartItems && table.cartItems.length > 0) {
           const orderData = {
             tableId: table.id,
-            items: table.cartItems.map((item) => ({
+            items: table.cartItems.map(item => ({
               drinkId: item.id,
               quantity: item.quantity,
               price: item.price,
             })),
             total: table.total,
-            status: 'completed',
+            status: "completed",
           };
           // await createOrder(orderData);
         }
@@ -114,24 +129,36 @@ const TableManagementPage = () => {
       const updatedStatus = newStatus;
       await updateTable(tableId, {
         status: updatedStatus,
-        cartItems: newStatus === 'completed' || newStatus === 'canceled' ? [] : table.cartItems,
-        total: newStatus === 'completed' || newStatus === 'canceled' ? 0 : table.total,
+        cartItems:
+          newStatus === "completed" || newStatus === "canceled"
+            ? []
+            : table.cartItems,
+        total:
+          newStatus === "completed" || newStatus === "canceled"
+            ? 0
+            : table.total,
       });
 
-      setTables((prevTables) =>
-        prevTables.map((t) =>
+      setTables(prevTables =>
+        prevTables.map(t =>
           t.id === tableId
             ? {
                 ...t,
                 status: updatedStatus,
-                cartItems: newStatus === 'completed' || newStatus === 'canceled' ? [] : t.cartItems,
-                total: newStatus === 'completed' || newStatus === 'canceled' ? 0 : t.total,
+                cartItems:
+                  newStatus === "completed" || newStatus === "canceled"
+                    ? []
+                    : t.cartItems,
+                total:
+                  newStatus === "completed" || newStatus === "canceled"
+                    ? 0
+                    : t.total,
               }
             : t
         )
       );
 
-      if (newStatus === 'completed' || newStatus === 'canceled') {
+      if (newStatus === "completed" || newStatus === "canceled") {
         setSelectedTable(null);
       }
     } catch (err) {
@@ -147,7 +174,10 @@ const TableManagementPage = () => {
         <TableList tables={tables} onSelectTable={handleSelectTable} />
       </div>
       {selectedTable && (
-        <TableCart table={selectedTable} handleTableStatus={handleTableStatus} />
+        <TableCart
+          table={selectedTable}
+          handleTableStatus={handleTableStatus}
+        />
       )}
     </div>
   );
