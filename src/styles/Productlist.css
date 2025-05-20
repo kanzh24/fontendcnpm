@@ -239,6 +239,7 @@
   .product-modal {
     padding: 1.5rem;
     max-width: 60%;
+    height: 600px;
   }
 
   .product-modal img {
