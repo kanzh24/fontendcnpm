@@ -11,8 +11,7 @@
   top: 0;
   left: 0;
   width: calc(100% - 320px); /* Adjust width to avoid overlap with cart (300px cart width + 20px margin) */
-  z-index: 100; /* Ensure header is above other elements */
-  height: 70px; /* Đảm bảo chiều cao nhất quán */
+  z-index: 20; /* Ensure header is above other elements */
 }
 
 /* Logo Section */
@@ -32,24 +31,6 @@
   margin: 0;
   color: #ffffff; /* White text */
   font-weight: bold;
-}
-
-/* Table Info */
-.header-table {
-  display: flex;
-  align-items: center;
-}
-
-.header-table span {
-  color: #f97316; /* White text */
-  background-color: #ffffff;
-  font-size: 1.2rem;
-  font-weight: 500;
-  border-radius: 3%;
-  height: 35px;
-  width: 100px;
-  text-align: center;
-  padding: auto;
 }
 
 /* Search Bar */
@@ -103,25 +84,6 @@
 .header-user button:hover {
   color: #ffedd5; /* Light orange on hover */
 }
-
-/* Nút toggle giỏ hàng */
-.cart-toggle-button {
-  background-color: #ffffff; /* White background */
-  color: #f97316; /* Orange text */
-  border: none;
-  border-radius: 5px;
-  padding: 8px 15px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.cart-toggle-button:hover {
-  background-color: #ffedd5; /* Light orange on hover */
-}
-
-/* Responsive cho mobile */
 @media (max-width: 768px) {
   .header {
     width: 100%; /* Full width on mobile */
@@ -152,12 +114,6 @@
   .header-user button {
     font-size: 1.2rem; /* Smaller icon */
   }
-
-  .cart-toggle-button {
-    padding: 6px 10px;
-    font-size: 0.9rem;
-    width: 50px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -171,10 +127,5 @@
 
   .header-table span {
     font-size: 0.8rem;
-  }
-
-  .cart-toggle-button {
-    padding: 5px 8px;
-    font-size: 0.85rem;
   }
 }

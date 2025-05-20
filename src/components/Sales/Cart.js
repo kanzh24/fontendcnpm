@@ -3,11 +3,11 @@ import { useParams } from 'react-router-dom';
 import { createOrder, createPayment } from '../../api/api';
 import { toast } from 'react-toastify';
 
-const Cart = ({ cartItems, setCartItems, isOpen, setIsOpen }) => {
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState(null);
-  const { tableId } = useParams();
+const Cart = ({ cartItems, setCartItems }) => {
   const fallbackImage = require(`../../assets/images/image01.jpg`);
+  const [paymentMethod, setPaymentMethod] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { tableId } = useParams();
 
   const handleQuantityChange = (id, delta) => {
     setCartItems((prevItems) =>
@@ -15,10 +15,13 @@ const Cart = ({ cartItems, setCartItems, isOpen, setIsOpen }) => {
         .map((item) => {
           if (item.id === id) {
             const newQuantity = item.quantity + delta;
-            const remaining = item.remaining ?? 0;
+            const remaining = item.remaining ?? 0; // Use stored remaining
+            console.log(item)
+            // Allow decreasing quantity (including to 0)
             if (delta < 0 && newQuantity >= 0) {
               return { ...item, quantity: newQuantity };
             }
+            // Allow increasing quantity if within remaining stock
             if (delta > 0 && newQuantity <= remaining) {
               return { ...item, quantity: newQuantity };
             } else if (delta > 0 && newQuantity > remaining) {
@@ -31,7 +34,7 @@ const Cart = ({ cartItems, setCartItems, isOpen, setIsOpen }) => {
           }
           return item;
         })
-        .filter((item) => item.quantity > 0)
+        .filter((item) => item.quantity > 0) // Remove items with quantity 0
     );
   };
 
@@ -54,6 +57,7 @@ const Cart = ({ cartItems, setCartItems, isOpen, setIsOpen }) => {
       console.log(orderData);
       const response = await createOrder(orderData);
       console.log(response);
+      
       return response.id;
     } catch (error) {
       console.error('Lỗi khi tạo đơn hàng:', error.response?.data?.message || error.message);
@@ -104,7 +108,7 @@ const Cart = ({ cartItems, setCartItems, isOpen, setIsOpen }) => {
 
     if (paymentMethod === 'cash') {
       toast.success('Đặt món thành công! Nhân viên sẽ đến bàn để thu tiền và xác nhận hóa đơn.');
-      setCartItems([]);
+      setCartItems([]); // Clear cart after successful order
       localStorage.removeItem(`cart-${tableId}`);
     } else if (paymentMethod === 'vnpay') {
       await handleVNPayPayment(orderId);
@@ -115,7 +119,7 @@ const Cart = ({ cartItems, setCartItems, isOpen, setIsOpen }) => {
 
   return (
     <div className="cart-container">
-      <div className={`cart ${isOpen ? 'open' : ''}`}>
+      <div className="cart">
         <h3 className="cart-title">Giỏ hàng</h3>
         <ul className="cart-items">
           {cartItems.map((item) => (
@@ -146,7 +150,6 @@ const Cart = ({ cartItems, setCartItems, isOpen, setIsOpen }) => {
               name="paymentMethod"
               value="cash"
               onChange={() => setPaymentMethod('cash')}
-              checked={paymentMethod === 'cash'}
             />
             Tiền mặt
           </label>
