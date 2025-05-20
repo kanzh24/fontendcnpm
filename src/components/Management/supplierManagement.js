@@ -8,10 +8,12 @@ import {
   updateSupplier,
   deleteSupplier,
   restoreSupplier,
-} from '../../api/api'; // Import các API đã cung cấp
+  deletedSuppliersList, // API mới để lấy danh sách đã xóa
+} from '../../api/api';
 
 const SupplierManagement = () => {
-  const [suppliers, setSuppliers] = useState([]);
+  const [suppliers, setSuppliers] = useState([]); // Danh sách nhà cung cấp active
+  const [deletedSuppliers, setDeletedSuppliers] = useState([]); // Danh sách nhà cung cấp đã xóa
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentSupplier, setCurrentSupplier] = useState(null);
@@ -21,7 +23,7 @@ const SupplierManagement = () => {
     phone: '',
     address: '',
   });
-  const [showDeleted, setShowDeleted] = useState(false); // State để chuyển đổi giữa danh sách active và deleted
+  const [showDeleted, setShowDeleted] = useState(false); // Chuyển đổi giữa active và deleted
   const [loading, setLoading] = useState(false);
 
   // Lấy danh sách nhà cung cấp khi component mount
@@ -32,8 +34,12 @@ const SupplierManagement = () => {
   const fetchSuppliers = async () => {
     setLoading(true);
     try {
-      const data = await getSuppliers();
-      setSuppliers(data);
+      const activeData= await getSuppliers()
+      const deletedData = await deletedSuppliersList()
+      setSuppliers(activeData); // Chỉ lấy active
+      setDeletedSuppliers(deletedData); // Lấy danh sách đã xóa từ API
+      console.log('Active suppliers:', activeData);
+      console.log('Deleted suppliers:', deletedData);
     } catch (error) {
       toast.error('Không thể tải danh sách nhà cung cấp!');
       console.error('Error fetching suppliers:', error);
@@ -87,15 +93,13 @@ const SupplierManagement = () => {
 
     try {
       if (isEditMode) {
-        // Sửa nhà cung cấp
         await updateSupplier(currentSupplier.id, formData);
         toast.success('Cập nhật nhà cung cấp thành công!');
       } else {
-        // Thêm nhà cung cấp
         await createSupplier(formData);
         toast.success('Thêm nhà cung cấp thành công!');
       }
-      fetchSuppliers(); // Cập nhật danh sách
+      fetchSuppliers(); // Cập nhật cả active và deleted
       closeModal();
     } catch (error) {
       toast.error(isEditMode ? 'Cập nhật thất bại!' : 'Thêm thất bại!');
@@ -136,10 +140,6 @@ const SupplierManagement = () => {
       setLoading(false);
     }
   };
-
-  // Lọc danh sách nhà cung cấp active và đã xóa
-  const activeSuppliers = suppliers.filter((supplier) => !supplier.isDeleted);
-  const deletedSuppliers = suppliers.filter((supplier) => supplier.isDeleted);
 
   return (
     <div className="supplier-management">
@@ -195,7 +195,7 @@ const SupplierManagement = () => {
           ) : (
             <div className="active-suppliers">
               <h3>Danh sách nhà cung cấp</h3>
-              {activeSuppliers.length === 0 ? (
+              {suppliers.length === 0 ? (
                 <p>Không có nhà cung cấp nào.</p>
               ) : (
                 <table className="supplier-table">
@@ -209,7 +209,7 @@ const SupplierManagement = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {activeSuppliers.map((supplier) => (
+                    {suppliers.map((supplier) => (
                       <tr key={supplier.id}>
                         <td>{supplier.name}</td>
                         <td>{supplier.email}</td>

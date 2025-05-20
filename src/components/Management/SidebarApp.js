@@ -8,6 +8,7 @@ import ProductManagement from './ProductManagement';
 import TableManagementPage from './TableManagementPage';
 import IngredientManagementPage from './IngredientManagementPage';
 import IngredientManagement from './IngredientManagement';
+import SupplierManagement from './supplierManagement';
 
 const SidebarApp = () => {
   const [activeFeature, setActiveFeature] = useState('tableManagement');
@@ -28,6 +29,7 @@ const SidebarApp = () => {
     { icon: 'fa-table', label: 'Quản lý bàn', feature: 'tableManagement' },
     { icon: 'fa-warehouse', label: 'Quản lý nhập nguyên liệu', feature: 'ingredientManagement' },
     { icon: 'fa-lemon', label: 'Quản lý nguyên liệu', feature: 'ingredient' },
+    { icon: 'fa-truck', label: 'Quản lý nhà cung cấp', feature: 'Supplier' }
   ];
 
   const renderContent = () => {
@@ -46,6 +48,8 @@ const SidebarApp = () => {
         return <IngredientManagementPage />;
       case 'ingredient':
         return <IngredientManagement />;
+      case 'Supplier':
+        return <SupplierManagement/>;
       default:
         return <TableManagementPage />;
     }

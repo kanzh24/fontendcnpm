@@ -28,7 +28,7 @@ import './styles/ReceiptList.css';
 import './styles/IngredientSelection.css';
 import './styles/BaristaPage.css';
 import './styles/payment.css';
-// import './styles/supplier.css';
+import './styles/supplier.css';
 
 // Component bảo vệ route
 const ProtectedRoute = ({ children }) => {

@@ -92,6 +92,12 @@ export const restoreSupplier = async (id) => {
   const response = await api.patch(`/api/v1/suppliers/${id}`);
   return response.data;
 };
+export const deletedSuppliersList = async () => {
+  const response = await api.get(`/api/v1/suppliers/deleted`);
+  return response.data;
+};
+
+
 
 // Ingredients (Quản lý nguyên liệu)
 export const createIngredient = async (ingredientData) => {
