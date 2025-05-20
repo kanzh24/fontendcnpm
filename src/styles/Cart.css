@@ -1,21 +1,16 @@
+/* Cart Container */
 .cart-container .cart {
   position: fixed;
   top: 0;
   right: 0;
   width: 300px;
   height: 100vh;
-  background-color: #ffffff;
-  border-left: 2px solid #f97316;
+  background-color: #ffffff; /* White background */
+  border-left: 2px solid #f97316; /* Orange border */
   padding: 1rem;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   z-index: 10;
-  transform: translateX(100%); /* Hidden by default */
-  transition: transform 0.3s ease;
-}
-
-.cart-container .cart.open {
-  transform: translateX(0); /* Show when open */
 }
 
 .cart-container .cart-title {
@@ -139,21 +134,20 @@
   background-color: #ea580c; /* Darker orange on hover */
 }
 @media (max-width: 768px) {
-.cart-container .cart {
-    width: 100%;
+  .cart-container .cart {
+    width: 100%; /* Full-screen width */
     right: 0;
-    top: 50px;
-    height: calc(100vh - 110px);
+    top: 50px; /* Below header */
+    height: calc(100vh - 110px); /* Account for header and bottom nav */
     border-left: none;
     padding: 0.8rem;
     z-index: 15;
-    transform: translateX(100%); /* Ẩn mặc định trên mobile */
+    transition: transform 0.3s ease; /* Smooth slide-in */
+    transform: translateX(100%); /* Hidden by default */
   }
 
   .cart-container .cart.open {
-    transform: translateX(0);
-    width: 70%;
-
+    transform: translateX(0); /* Show when open */
   }
 
   .cart-container .cart-title {
@@ -212,30 +206,6 @@
   .cart-container .payment-methods label {
     font-size: 0.9rem;
   }
-  .cart-container .cart {
-    width: 100%;
-    right: 0;
-    top: 50px;
-    height: calc(100vh - 110px);
-    border-left: none;
-    padding: 0.8rem;
-    z-index: 15;
-    transform: translateX(100%); /* Ẩn mặc định trên mobile */
-  }
-
-  .cart-container .cart.open {
-    transform: translateX(0); /* Hiện khi nhấn nút */
-  }
-
-  .cart-toggle-button {
-    bottom: 70px;
-    right: 10px;
-    width: 100px;
-    height: 45px;
-    font-size: 0.9rem;
-    display: block; /* Luôn hiển thị nút trên mobile */
-  }
-
 }
 
 @media (max-width: 480px) {
